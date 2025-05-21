@@ -1,0 +1,13 @@
+<!-- fragments/header.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<div class="top-bar" th:fragment="topbar">
+  <img th:src="@{/img/topback.webp}" alt="博客背景" class="logo-img">
+  <div class="label">
+    <img th:src="@{/img/Polo-removebg-preview.png}" alt="菠萝" class="label-img">
+    <h1>polock</h1>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="搜索...">
+  </div>
+</div>

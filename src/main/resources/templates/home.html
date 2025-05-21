@@ -1,0 +1,28 @@
+<!-- home.html 主模板 -->
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>微博风格主界面</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<div th:replace="fragments/header"></div>
+
+<main>
+    <div class="content">
+        <!-- 左侧导航栏 -->
+        <aside th:replace="fragments/sidebar :: left"></aside>
+
+        <!-- 中间主体内容 -->
+        <div th:with="frag=${frag}" th:replace="fragments/__${frag}__ :: content"></div>
+
+        <!-- 右侧热门话题栏 -->
+        <aside th:replace="fragments/sidebar :: right"></aside>
+    </div>
+</main>
+
+</body>
+</html>

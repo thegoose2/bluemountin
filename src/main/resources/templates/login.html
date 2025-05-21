@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>登录 - 微博风格</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+</head>
+<body>
+<div class="login-container">
+    <div class="login-box">
+
+        <div th:with="frag=${frags}" th:replace="fragments/__${frags}__ :: login-content"></div>
+
+        <div class="login-footer">
+            <span>其他方式登录：</span>
+            <div class="social-icons">
+                <a href="#"><img src="" alt="微信" /></a>
+                <a href="#"><img src="" alt="QQ" /></a>
+                <a href="#"><img src="" alt="Apple" /></a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

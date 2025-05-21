@@ -1,0 +1,19 @@
+<div class="login-chance" th:fragment="login-content">
+    <div class="login-tabs">
+        <button class="tab active">账号注册</button>
+    </div>
+    <form class="login-form" th:action="@{/login/register}" method="post">
+        <div th:if="${error}" style="color:red; margin-bottom:10px;">
+            <p th:text="${error}"></p>
+        </div>
+        <input type="text" name="username" placeholder="用户名" required />
+        <input type="email" name="email" placeholder="邮箱" required />
+        <input type="password" name="password" placeholder="请输入密码" required />
+        <input type="password" name="confirmpassword" placeholder="请确认密码" required />
+        <button type="submit">注册</button>
+        <div class="options">
+            <a href="#">忘记密码？</a>
+            <a th:href="@{/login}">登录</a>
+        </div>
+    </form>
+</div>

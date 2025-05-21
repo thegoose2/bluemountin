@@ -1,0 +1,16 @@
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+  application:
+    name: lanshan
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/bolock?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    username: root
+    password: 200472pqc
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis:
+    config-location: classpath:mybatis-config.xml

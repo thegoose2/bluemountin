@@ -1,0 +1,24 @@
+<!-- fragments/feed.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<div class="feed" th:fragment="content">
+  <article class="post">
+    <header>
+      <img src="avatar.jpg" alt="头像">
+      <div class="user-info">
+        <h3>用户名</h3>
+        <span>@username</span>
+      </div>
+    </header>
+    <div class="post-content">
+      <p>这是一条示例帖子内容……</p>
+      <img src="post-image.jpg" alt="帖子图片">
+    </div>
+    <footer>
+      <button>点赞</button>
+      <button>评论</button>
+      <button>转发</button>
+      <span>发布于：2025-05-19</span>
+    </footer>
+  </article>
+</div>
