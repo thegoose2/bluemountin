@@ -53,6 +53,7 @@ public class web {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    //注册
     @PostMapping("/login/register")
     public String toregister(Users user, Model model, @RequestParam String confirmpassword) {
         if(!user.getPassword().equals(confirmpassword)) {

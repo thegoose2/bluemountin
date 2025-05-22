@@ -1,5 +1,7 @@
 package com.work.lanshan.config;
 
+import com.work.lanshan.Components.MyPersistentTokenRepository;
+import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
 import org.springframework.ui.Model;
 import com.work.lanshan.Entety.Users;
 import com.work.lanshan.Mapper.Usermapper;
@@ -19,6 +21,10 @@ import org.springframework.stereotype.Service;
 @Configuration
 @EnableWebSecurity
 public class login {
+
+    @Autowired
+    private MyPersistentTokenRepository tokenRepository;
+
     @Bean
     public SecurityFilterChain FilterChain(HttpSecurity http) throws Exception {
         http
@@ -41,6 +47,11 @@ public class login {
                         .defaultSuccessUrl("/profile", true)
                         .failureUrl("/loginerror")
                         .permitAll()
+                )
+                .rememberMe(rememberMe -> rememberMe
+                        .tokenRepository(tokenRepository)  // 使用你的 Redis 实现
+                        .userDetailsService(new UserServiceImpl())        // 提供用户验证
+                        .tokenValiditySeconds(14 * 24 * 60 * 60)         // 设置有效期（秒）
                 );
         return http.build();
     }
@@ -50,6 +61,7 @@ public class login {
         return new BCryptPasswordEncoder();
     }
 
+    //登录
     @Service
     public static class UserServiceImpl implements UserDetailsService {
         @Autowired
@@ -71,5 +83,8 @@ public class login {
             }
         }
     }
+
+
+
 }
 

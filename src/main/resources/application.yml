@@ -3,14 +3,25 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     cache: false
+
   application:
     name: lanshan
 
   datasource:
-    url: jdbc:mysql://localhost:3306/bolock?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/bolock?true&useSSL=false&serverTimezone=UTC&characterEncoding=utf8
     username: root
     password: 200472pqc
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: localhost
+      password: 200472pqc
+      timeout: 5000ms
+      port: 6379
+
 mybatis:
     config-location: classpath:mybatis-config.xml
+
+
+
