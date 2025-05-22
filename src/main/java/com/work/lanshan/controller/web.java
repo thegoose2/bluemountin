@@ -71,8 +71,8 @@ public class web {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         usermapper.insertuser(user);
         usermapper.setuserrole(usermapper.findbyusername(user.getUsername()).getId(),1);
-        model.addAttribute("frag", "profile");
-        return "home";
+        model.addAttribute("frags", "login-login");
+        return "login";
     }
 //自定义登录控制器
 //    @PostMapping("/login/login")
@@ -97,6 +97,11 @@ public class web {
 //            }
 //        }
 //    }
+
+    @GetMapping("/edit")
+    public String edit() {
+        return "editor/edit";
+    }
 
 
 }

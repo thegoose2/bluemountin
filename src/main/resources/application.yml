@@ -8,7 +8,8 @@ spring:
     name: lanshan
 
   datasource:
-    url: jdbc:mysql://localhost:3306/bolock?true&useSSL=false&serverTimezone=UTC&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/bolock?true&useSSL=false&serverTimezone=UTC&characterEncoding=utf8&allowPublicKeyRetrieval=true
+
     username: root
     password: 200472pqc
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,6 +20,7 @@ spring:
       password: 200472pqc
       timeout: 5000ms
       port: 6379
+      database: 0
 
 mybatis:
     config-location: classpath:mybatis-config.xml
