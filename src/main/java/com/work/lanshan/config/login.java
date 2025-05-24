@@ -30,10 +30,10 @@ public class login {
         http
                 .authorizeHttpRequests(auth -> auth
                         // 公共页面允许所有人访问（登录页、静态资源等）
-                        .requestMatchers("/login/**", "/css/**", "/js/**", "/img/**","/", "/home/**","/registerer/**","/edit/**").permitAll()
+                        .requestMatchers("/login/**", "/css/**", "/js/**", "/img/**","/", "/home/**","/registerer/**","/edit/**","/editor/**","/static/**").permitAll()
 
                         // 用户页面，如发帖、资料页，需要 USER 或 ADMIN 权限
-                        .requestMatchers("/profile", "/post/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
 
                         // 管理员页面需要 ADMIN 权限
                         .requestMatchers("/admin/**").hasRole("ADMIN")

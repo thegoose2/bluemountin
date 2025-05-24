@@ -100,7 +100,7 @@ public class web {
 
     @GetMapping("/edit")
     public String edit() {
-        return "editor/edit";
+        return "edit";
     }
 
 

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <title>Simple example - Editor.md examples</title>
+    <link rel="stylesheet" th:href="@{/editor/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/editor/css/editormd.css}"/>
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+<div id="layout">
+    <header>
+        <h1>Simple example</h1>
+    </header>
+    <form name="mdEditorForm">
+        <div id="test-editormd">
+            <textarea name="text" id="text" style="display:none;"> </textarea>
+        </div>
+    </form>
+</div>
+<script th:src="@{/editor/js/jquery.min.js}"></script>
+<script th:src="@{/editor/js/editormd.min.js}"></script>
+<script type="text/javascript">
+    var testEditor;
+    $(function() {
+        testEditor = editormd("test-editormd", {
+            width: "90%",
+            height: 640,
+            syncScrolling: "single",
+            emoji: true,
+            path: "../editor/lib/",
+            /**下述为新增，上面一行记得加逗号结束*/
+            /*指定需要显示的功能按钮*/
+            toolbarIcons : function() {
+                return ["undo", "redo", "|","bold", "italic","ucwords","uppercase","lowercase","|","h1","h2","h3","h4","h5","h6","|","list-ul","list-ol","table","datetime","hr",  "||",  "watch", "fullscreen", "preview", "releaseIcon", "saveDraft", "index"]
+            },
+
+            /*自定义功能按钮，下面我自定义了2个，一个是发布，一个是返回首页*/
+            toolbarIconTexts : {
+                releaseIcon : "<span>发布</span>",
+                saveDraft : "<span>保存草稿</span>",
+                index : "<span>返回首页</span>"
+            },
+
+            /*给自定义按钮指定回调函数*/
+            toolbarHandlers: {
+                releaseIcon: function () {
+                    contentCommit(1); // 发布
+                },
+                saveDraft: function () {
+                    contentCommit(0); // 草稿
+                },
+                index: function () {
+                    window.location.href = "/";
+                }
+            }
+        });
+    });
+    function contentCommit(status) {
+        const content = testEditor.getMarkdown();
+
+        $.ajax({
+            url: "/articles",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                title: title,
+                content: content,
+                status: status
+            }),
+            success: function() {
+                alert(status === 1 ? "发布成功" : "草稿已保存");
+            },
+            error: function() {
+                alert("操作失败！");
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
