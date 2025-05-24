@@ -14,8 +14,8 @@ public class ArticleService {
         this.articleMapper = articleMapper;
     }
 
-    public Article getArticle(Long id) {
-        return articleMapper.selectById(id);
+    public List<Article>  getArticle(Long id) {
+        return articleMapper.selectByAuthorId(id);
     }
 
     public List<Article> listPublished(int page, int size) {
@@ -38,6 +38,8 @@ public class ArticleService {
     public int deleteArticle(Long id) {
         return articleMapper.delete(id);
     }
+
+
 }
 
 

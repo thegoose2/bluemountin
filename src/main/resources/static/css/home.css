@@ -165,7 +165,39 @@ main {
 }
 
 .user-info span {
-    color: #666;
+    color: #5bb0c1;
+}
+
+.top-back{
+    background-image: url("../img/top-back.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 500px;
+}
+
+.top-back header {
+    display: flex;
+    align-items: center; /* 垂直居中头像和用户名 */
+    gap: 15px; /* 控制头像和用户名之间的间距 */
+}
+
+.top-back header img {
+    width: 60px;         /* 设置头像大小 */
+    height: 60px;
+    border-radius: 50%;  /* 圆形头像 */
+    object-fit: cover;
+}
+
+.user-info-total h3 {
+    margin: 0;
+    font-size: 18px;
+    color: white;        /* 或你希望的颜色 */
+}
+
+.user-info-total span {
+    font-size: 14px;
+    color: white;
 }
 
 .post-content p {

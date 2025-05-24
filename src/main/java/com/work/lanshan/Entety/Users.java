@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 public class Users implements UserDetails {
     private int id;
-    @Getter
     private String username;
     private String password;
     private String email;

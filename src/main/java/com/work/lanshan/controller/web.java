@@ -1,7 +1,12 @@
 package com.work.lanshan.controller;
 
+import com.work.lanshan.Components.MarkdownUtils;
+import com.work.lanshan.Entety.Article;
 import com.work.lanshan.Entety.Users;
+import com.work.lanshan.config.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +14,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class web {
+    private final ArticleService articleService;
+
+    public web(ArticleService articleService) {
+        this.articleService = articleService;
+    }
+
 
     // 首页，显示动态feed内容
     @GetMapping({"/", "/home"})
@@ -22,8 +35,17 @@ public class web {
     // 用户个人主页，显示profile内容
     @GetMapping("/profile")
     public String profile(Model model) {
-        model.addAttribute("frag", "profile"); // 对应 fragments/profile.html
-        return "home"; // 用同一个 home 模板
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users currentUser = (Users) authentication.getPrincipal();
+        Long userid = (long) currentUser.getId(); // 🎉 直接获取 userId
+        List<Article> articleList = articleService.getArticle(userid);
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html); // 替换内容
+        }
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("frag", "profile");
+        return "home"; // home.html 模板中包含 fragments/profile.html 片段
     }
 
     // 登录页
@@ -102,6 +124,5 @@ public class web {
     public String edit() {
         return "edit";
     }
-
 
 }

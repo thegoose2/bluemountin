@@ -2,5 +2,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <div class="feed" th:fragment="content">
-  <p th:text="${username}"></p>
+    <div class="top-back">
+        <header>
+            <img src="avatar.jpg" alt="头像">
+            <div class="user-info-total">
+                <h3>用户名</h3>
+                <span>@username</span>
+            </div>
+        </header>
+    </div>
+    <article class="post" th:each="article : ${articleList}">
+        <header>
+            <div class="user-info">
+                <span th:text="'@' + ${article.authorId}">@username</span>
+            </div>
+        </header>
+        <div class="post-content">
+            <p th:utext="${article.content}">这是一条示例帖子内容……</p>
+        </div>
+        <footer>
+            <button>点赞 (<span th:text="${article.likeCount}">0</span>)</button>
+            <button>评论 (<span th:text="${article.commentCount}">0</span>)</button>
+            <button>浏览 (<span th:text="${article.viewCount}">0</span>)</button>
+            <span th:text="'发布于：' + ${article.createdAt}"></span>
+        </footer>
+    </article>
 </div>

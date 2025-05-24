@@ -1,6 +1,8 @@
 package com.work.lanshan.config;
 
 import com.work.lanshan.Components.MyPersistentTokenRepository;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
 import org.springframework.ui.Model;
 import com.work.lanshan.Entety.Users;
@@ -33,7 +35,7 @@ public class login {
                         .requestMatchers("/login/**", "/css/**", "/js/**", "/img/**","/", "/home/**","/registerer/**","/edit/**","/editor/**","/static/**").permitAll()
 
                         // 用户页面，如发帖、资料页，需要 USER 或 ADMIN 权限
-                        .requestMatchers("/profile").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/profile","/post/**","/articles/**").hasAnyRole("USER", "ADMIN")
 
                         // 管理员页面需要 ADMIN 权限
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -52,7 +54,10 @@ public class login {
                         .tokenRepository(tokenRepository)  // 使用你的 Redis 实现
                         .userDetailsService(new UserServiceImpl())        // 提供用户验证
                         .tokenValiditySeconds(14 * 24 * 60 * 60)         // 设置有效期（秒）
-                );
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers
+                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)); // ✅ 允许 iframe 同源访问// ✅ 正确的新方式
         return http.build();
     }
 
@@ -78,6 +83,7 @@ public class login {
                 }
                 else{
                     user.setRoles(usermapper.getUserRolesByUid(user.getId()));
+                    // 假设你在登录成功后执行以下代码：
                     return user;
                 }
             }

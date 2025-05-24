@@ -22,6 +22,14 @@ spring:
       port: 6379
       database: 0
 
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+
+
+
+
 mybatis:
     config-location: classpath:mybatis-config.xml
 

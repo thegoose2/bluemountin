@@ -13,8 +13,9 @@
         <h1>Simple example</h1>
     </header>
     <form name="mdEditorForm">
+        <input type="text" id="title" name="title" placeholder="请输入标题" style="width: 90%; margin: 10px 0; padding: 5px;" />
         <div id="test-editormd">
-            <textarea name="text" id="text" style="display:none;"> </textarea>
+            <textarea name="content" id="text" style="display:none;"> </textarea>
         </div>
     </form>
 </div>
@@ -29,10 +30,13 @@
             syncScrolling: "single",
             emoji: true,
             path: "../editor/lib/",
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "/articles/upload/image", // 你的后端上传接口
             /**下述为新增，上面一行记得加逗号结束*/
             /*指定需要显示的功能按钮*/
             toolbarIcons : function() {
-                return ["undo", "redo", "|","bold", "italic","ucwords","uppercase","lowercase","|","h1","h2","h3","h4","h5","h6","|","list-ul","list-ol","table","datetime","hr",  "||",  "watch", "fullscreen", "preview", "releaseIcon", "saveDraft", "index"]
+                return ["undo", "redo", "|","bold", "italic","ucwords","uppercase","lowercase","|","h1","h2","h3","h4","h5","h6","|","list-ul","list-ol","table","datetime","hr",  "||",  "image", "watch", "fullscreen", "preview", "releaseIcon", "saveDraft", "index"]
             },
 
             /*自定义功能按钮，下面我自定义了2个，一个是发布，一个是返回首页*/
@@ -45,37 +49,31 @@
             /*给自定义按钮指定回调函数*/
             toolbarHandlers: {
                 releaseIcon: function () {
-                    contentCommit(1); // 发布
+                    contentCommit1(); // 发布
                 },
                 saveDraft: function () {
-                    contentCommit(0); // 草稿
+                    contentCommit0(); // 草稿
                 },
                 index: function () {
-                    window.location.href = "/";
+                    window.location.href = "/profile";
                 }
             }
         });
     });
-    function contentCommit(status) {
-        const content = testEditor.getMarkdown();
-
-        $.ajax({
-            url: "/articles",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
-                title: title,
-                content: content,
-                status: status
-            }),
-            success: function() {
-                alert(status === 1 ? "发布成功" : "草稿已保存");
-            },
-            error: function() {
-                alert("操作失败！");
-            }
-        });
+    /*提交表单的js*/
+    function contentCommit1(){
+        $('#content').val(testEditor.getMarkdown());
+        mdEditorForm.method = "post";
+        mdEditorForm.action = "articles/sure";//提交至服务器的路径
+        mdEditorForm.submit();
     }
+    function contentCommit0(){
+        $('#content').val(testEditor.getMarkdown());
+        mdEditorForm.method = "post";
+        mdEditorForm.action = "articles/unsure";//提交至服务器的路径
+        mdEditorForm.submit();
+    }
+
 
 </script>
 </body>

@@ -10,7 +10,7 @@ import java.util.List;
 public interface ArticleMapper {
     int insert(Article article);
     int update(Article article);
-    Article selectById(Long id);
+    List<Article> selectByAuthorId(Long id);
     List<Article> selectPublished(@Param("offset") int offset, @Param("limit") int limit);
     int softDelete(Long id);
     int delete(Long id);
