@@ -6,7 +6,7 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO article(title, content, author_id, status, view_count, like_count, comment_count, created_at, updated_at)
-        VALUES(#{title}, #{content}, #{authorId}, #{status}, #{viewCount}, #{likeCount}, #{commentCount}, NOW(), NOW())
+        VALUES(#{title}, #{content}, #{author_id}, #{status}, #{view_count}, #{like_count}, #{comment_count}, NOW(), NOW())
     </insert>
     <update id="update">
         UPDATE article SET title=#{title}, content=#{content}, status=#{status}, updated_at=NOW() WHERE id=#{id}
@@ -17,11 +17,14 @@
     <delete id="delete">
         DELETE FROM article WHERE id=#{id}
     </delete>
-    <select id="selectByAuthorId" resultType="com.work.lanshan.Entety.Article">
-       SELECT * FROM article WHERE author_id = #{id}
+    <select id="selectByAuthorIdandstatus" resultType="com.work.lanshan.Entety.Article">
+       SELECT * FROM article WHERE author_id = #{id} and status = #{status}
     </select>
     <select id="selectPublished" resultType="com.work.lanshan.Entety.Article">
         SELECT * FROM article WHERE status != 3 ORDER BY published_at DESC LIMIT #{offset}, #{limit}
+    </select>
+    <select id="selectById" resultType="com.work.lanshan.Entety.Article">
+        select * from article where id =#{id}
     </select>
 
 </mapper>

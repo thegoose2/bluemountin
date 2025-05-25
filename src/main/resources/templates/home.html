@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <title>微博风格主界面</title>
     <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <script th:src="@{/js/uploadavatar.js}" defer></script>
 </head>
 <body>
 
@@ -16,8 +17,9 @@
         <!-- 左侧导航栏 -->
         <aside th:replace="fragments/sidebar :: left"></aside>
 
-        <!-- 中间主体内容 -->
-        <div th:with="frag=${frag}" th:replace="fragments/__${frag}__ :: content"></div>
+        <div id="main-content">
+            <div th:with="frag=${frag}" th:replace="fragments/__${frag}__ :: content"></div>
+        </div>
 
         <!-- 右侧热门话题栏 -->
         <aside th:replace="fragments/sidebar :: right"></aside>

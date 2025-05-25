@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${article.title}">文章详情</title>
+    <link rel="stylesheet" th:href="@{/css/article-detail.css}" />
+</head>
+<body>
+
+<div class="container">
+    <!-- 作者信息 -->
+    <div class="author-info">
+        作者：<span th:text="${user.username}">匿名</span> |
+        发布时间：<span th:text="${article.created_at}">时间</span>
+    </div>
+
+    <!-- 文章内容 -->
+    <div class="article-content" th:utext="${article.content}">
+        <!-- Markdown 渲染内容 -->
+    </div>
+
+<!--    &lt;!&ndash; 评论区 &ndash;&gt;-->
+<!--    <div class="comments-section">-->
+<!--        <h3>评论</h3>-->
+<!--        <div th:if="${#lists.isEmpty(article.comments)}">-->
+<!--            暂无评论，快来抢沙发！-->
+<!--        </div>-->
+<!--        <div th:each="comment : ${article.comments}" class="comment">-->
+<!--            <div class="comment-author" th:text="${comment.author}">评论者</div>-->
+<!--            <div class="comment-content" th:text="${comment.content}">评论内容</div>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>
+
+</body>
+</html>

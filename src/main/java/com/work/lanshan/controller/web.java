@@ -2,6 +2,7 @@ package com.work.lanshan.controller;
 
 import com.work.lanshan.Components.MarkdownUtils;
 import com.work.lanshan.Entety.Article;
+import com.work.lanshan.Entety.Role;
 import com.work.lanshan.Entety.Users;
 import com.work.lanshan.config.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class web {
@@ -37,21 +40,31 @@ public class web {
     public String profile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users currentUser = (Users) authentication.getPrincipal();
-        Long userid = (long) currentUser.getId(); // 🎉 直接获取 userId
-        List<Article> articleList = articleService.getArticle(userid);
+        int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
+        boolean T=false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if(role.getName().equals("ROLE_ADMIN")){
+                T=true;
+            }
+        }
+        List<Article> articleList = articleService.getArticle(userid,1);
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html); // 替换内容
         }
+
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("user", user);
         model.addAttribute("articleList", articleList);
         model.addAttribute("frag", "profile");
+        model.addAttribute("TT", T);
         return "home"; // home.html 模板中包含 fragments/profile.html 片段
     }
 
     // 登录页
     @GetMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("frags", "login-login");
+    public String login() {
         return "login";
     }
 
@@ -64,8 +77,18 @@ public class web {
 
     @GetMapping("/registerer")
     public String registered(Model model) {
-        model.addAttribute("frags", "login-registered");
+        model.addAttribute("frag", "login-registered");
         return "login";
+    }
+
+    @GetMapping("/registerer/fragment")
+    public String registereded() {
+        return "fragments/login-registered :: login-content";
+    }
+
+    @GetMapping("/login/fragment")
+    public String logined() {
+        return "fragments/login-login :: login-content";
     }
 
     //后台登录与注册
@@ -124,5 +147,135 @@ public class web {
     public String edit() {
         return "edit";
     }
+
+    @PostMapping("/users/uploadAvatar")
+    public String uploadAvatar(@RequestParam("avatar") MultipartFile file,Model model) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users currentUser = (Users) authentication.getPrincipal();
+        int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
+
+        String uploadDir = "E:/code/JAVA/pic/";
+        File dir = new File(uploadDir);
+        if(!dir.exists()) dir.mkdirs();
+
+        String ext = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = UUID.randomUUID().toString() + ext;
+        File dest = new File(uploadDir + fileName);
+        file.transferTo(dest);
+
+        boolean T=false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if(role.getName().equals("ROLE_ADMIN")){
+                T=true;
+            }
+        }
+        List<Article> articleList = articleService.getArticle(userid,1);
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html); // 替换内容
+        }
+
+        String avatarUrl = "/uploads/" + fileName;
+        usermapper.updateAvatar(userid,avatarUrl);
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("frag", "profile");
+        model.addAttribute("user", user);
+        model.addAttribute("TT", T);
+        return "home";
+
+    }
+
+    @GetMapping("/myblog")
+    public String blog(@RequestParam(defaultValue = "1") int temp, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users currentUser = (Users) authentication.getPrincipal();
+        int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
+
+        boolean T=false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if(role.getName().equals("ROLE_ADMIN")){
+                T=true;
+            }
+        }
+        List<Article> articleList = articleService.getArticle(userid,temp);
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html); // 替换内容
+        }
+
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("frag", "profile");
+        model.addAttribute("user", user);
+        model.addAttribute("TT", T);
+        return "home";
+    }
+
+    @GetMapping("/profile/fragment")
+    public String profileFragment(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users currentUser = (Users) authentication.getPrincipal();
+        int userid = (int) currentUser.getId();
+        boolean T = false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if (role.getName().equals("ROLE_ADMIN")) {
+                T = true;
+            }
+        }
+        List<Article> articleList = articleService.getArticle(userid, 1);
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html);
+        }
+
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("user", user);
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("TT", T);
+        return "fragments/profile :: content"; // 只返回中间部分
+    }
+
+    @GetMapping("/gate/fragment")
+    public String gateFragment(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users currentUser = (Users) authentication.getPrincipal();
+        int userid = (int) currentUser.getId();
+        boolean T = false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if (role.getName().equals("ROLE_ADMIN")) {
+                T = true;
+            }
+        }
+        List<Article> articleList = articleService.getArticle(userid, 1);
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html);
+        }
+
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("user", user);
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("TT", T);
+        return "fragments/feed :: content"; // 只返回中间部分
+    }
+
+    @GetMapping("/article/{id}")
+    public String showArticleDetail(@PathVariable int id, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users currentUser = (Users) authentication.getPrincipal();
+        Article article = articleService.findarticle(id); // 获取文章及评论
+        String html = MarkdownUtils.markdownToHtml(article.getContent());
+        article.setContent(html);
+        model.addAttribute("user", currentUser);
+        model.addAttribute("article", article);
+        return "article-detail"; // 对应 templates/article-detail.html
+    }
+
+
 
 }

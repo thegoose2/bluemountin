@@ -14,8 +14,12 @@ public class ArticleService {
         this.articleMapper = articleMapper;
     }
 
-    public List<Article>  getArticle(Long id) {
-        return articleMapper.selectByAuthorId(id);
+    public List<Article>  getArticle(int id,int status) {
+        return articleMapper.selectByAuthorIdandstatus(id, status);
+    }
+
+    public Article findarticle(int id) {
+        return articleMapper.selectById(id);
     }
 
     public List<Article> listPublished(int page, int size) {

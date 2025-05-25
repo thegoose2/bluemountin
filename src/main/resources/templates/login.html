@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>登录 - 微博风格</title>
     <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <script th:src="@{/js/uploadavatar.js}" defer></script>
 </head>
 <body>
 <div class="login-container">
     <div class="login-box">
 
-        <div th:with="frag=${frags}" th:replace="fragments/__${frags}__ :: login-content"></div>
+        <div id="login-main">
+            <div th:replace="fragments/login-login :: login-content"></div>
+        </div>
 
         <div class="login-footer">
             <span>其他方式登录：</span>

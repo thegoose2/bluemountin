@@ -85,20 +85,20 @@ body {
 main {
     padding: 20px;
     margin: 0 auto; /* 水平居中 */
-    background-color: #507c92;
+    background-color: #29bacd;
     background-size: cover;
 }
 
 .content {
     display: grid;
-    grid-template-columns: 0.5fr 3fr 0.5fr; /* 左侧窄，中间宽，右侧窄 */
+    grid-template-columns: 0.5fr 2fr 0.5fr; /* 左侧窄，中间宽，右侧窄 */
     gap: 20px;
     /* 移除固定高度，页面高度由内容决定 */
 }
 
 .left-sidebar, .right-sidebar {
-    background-color: #f9f9f9; /* 浅灰背景区分栏 */
-    border: 1px solid #ddd; /* 边框区分栏 */
+    background-color: #ffffff; /* 浅灰背景区分栏 */
+    border: none; /* 边框区分栏 */
     border-radius: 5px;
     padding: 10px;
     position: sticky; /* 粘性定位 */
@@ -107,8 +107,8 @@ main {
 }
 
 .feed {
-    background-color: #f9f9f9; /* 浅灰背景 */
-    border: 1px solid #ddd;
+    background-color: #ffffff; /* 浅灰背景 */
+    border: none;
     border-radius: 5px;
     padding: 10px;
     /* 无粘性定位，随页面滚动 */
@@ -142,7 +142,7 @@ main {
 .post {
     margin-bottom: 20px;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: none;
     border-radius: 5px;
     background-color: #fff; /* 文章白色背景 */
 }
@@ -160,26 +160,71 @@ main {
     margin-right: 10px;
 }
 
-.user-info h3 {
-    font-size: 18px;
+.user-info{
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .user-info span {
     color: #5bb0c1;
+    font-size: 20px;
 }
 
 .top-back{
     background-image: url("../img/top-back.jpg");
-    background-size: cover;
-    background-position: center;
+    background-size: 100% 70%;
+    background-position: top center;
     background-repeat: no-repeat;
-    height: 500px;
+    height: 600px;
+    position: relative;
 }
 
-.top-back header {
+.hhead{
     display: flex;
+    position: absolute;
     align-items: center; /* 垂直居中头像和用户名 */
-    gap: 15px; /* 控制头像和用户名之间的间距 */
+    gap: 20px;
+    bottom: 60px;
+}
+
+.form1{
+    position: absolute;
+    right: 20px;
+    bottom: 80px;
+}
+
+.form1 button{
+    border-radius: 20px;
+    background-color: #ee7e71;
+    transition:  0.5s ease;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    width: 80px;
+    height: 30px;
+}
+
+.form1 button:hover{
+    background-color: #cae9ee;
+}
+
+.create{
+    position: absolute;
+    right: 20px;
+    bottom: 40px;
+    border-radius: 20px;
+    background-color: #ee7e71;
+    transition:  0.5s ease;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    width: 80px;
+    height: 30px;
+}
+
+.create:hover{
+    background-color: #cae9ee;
 }
 
 .top-back header img {
@@ -189,19 +234,9 @@ main {
     object-fit: cover;
 }
 
-.user-info-total h3 {
-    margin: 0;
-    font-size: 18px;
-    color: white;        /* 或你希望的颜色 */
-}
-
 .user-info-total span {
-    font-size: 14px;
-    color: white;
-}
-
-.post-content p {
-    margin-bottom: 10px;
+    font-size: 30px;
+    color: #446fc1;
 }
 
 .post-content img {
@@ -217,13 +252,85 @@ main {
 }
 
 .post footer button {
+    display: flex;
+    align-items: center;
     padding: 5px 10px;
     margin-right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.5s ease;
+    border-radius: 10px;
 }
 
+.post footer button:hover{
+    background-color: #88c7dc;
+}
+
+.post footer .icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
 footer {
     text-align: center;
     padding: 10px;
-    background-color: #f8f8f8;
-    border-top: 1px solid #ddd;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+.article-filter {
+    display: flex;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.filter-btn {
+    flex: 1; /* 均分宽度 */
+    padding: 10px 0;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.filter-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.filter-btn.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.content-snippet {
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.read-more {
+    display: none; /* 默认隐藏 */
+    margin-top: 8px;
+    color: #007bff;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+.content-snippet::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 40px;
+    width: 100%;
+    background: linear-gradient(to top, white, transparent);
 }

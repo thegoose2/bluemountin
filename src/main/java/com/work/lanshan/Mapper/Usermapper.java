@@ -12,4 +12,5 @@ public interface Usermapper {
     Users findbyusername(String username);
     void setuserrole(int userid,int roleid);
     List<Role> getUserRolesByUid(int id);
+    void updateAvatar(long userId,String avatarUrl);
 }

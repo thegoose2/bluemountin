@@ -4,27 +4,60 @@
 <div class="feed" th:fragment="content">
     <div class="top-back">
         <header>
-            <img src="avatar.jpg" alt="头像">
-            <div class="user-info-total">
-                <h3>用户名</h3>
-                <span>@username</span>
+            <div class="hhead">
+                <img th:src="@{${user.img}}" alt="头像">
+                <div class="user-info-total">
+                    <span th:text="@{${user.username}}">@username</span>
+                </div>
             </div>
+            <form class="form1" th:action="@{/users/uploadAvatar}" method="post" enctype="multipart/form-data" id="avatarForm">
+                <input type="file" name="avatar" id="avatarInput" style="display: none;" required>
+                <button type="button" id="uploadButton">头像</button>
+            </form>
+            <button class="create" onclick="window.location.href='/edit'">创作</button>
         </header>
     </div>
+
+    <div class="article-filter">
+        <a class="filter-btn"
+           th:href="@{/myblog(temp=1)}"
+           th:classappend="${temp == 1} ? ' active'">已发布</a>
+
+        <a class="filter-btn"
+           th:href="@{/myblog(temp=2)}"
+           th:classappend="${temp == 2} ? ' active'">审核中</a>
+
+        <a class="filter-btn"
+           th:if="${TT}"
+           th:href="@{/myblog(temp=0)}"
+           th:classappend="${temp == 0} ? ' active'">待审核</a>
+    </div>
+
     <article class="post" th:each="article : ${articleList}">
         <header>
             <div class="user-info">
-                <span th:text="'@' + ${article.authorId}">@username</span>
+                <img th:src="@{${user.img}}" alt="头像">
+                <span th:text="@{${user.username}}">@username</span>
             </div>
         </header>
         <div class="post-content">
-            <p th:utext="${article.content}">这是一条示例帖子内容……</p>
+            <div class="content-snippet" th:utext="${article.content}">这是一条示例帖子内容……</div>
+            <a th:href="@{'/article/' + ${article.id}}" class="read-more">阅读全文</a>
         </div>
         <footer>
-            <button>点赞 (<span th:text="${article.likeCount}">0</span>)</button>
-            <button>评论 (<span th:text="${article.commentCount}">0</span>)</button>
-            <button>浏览 (<span th:text="${article.viewCount}">0</span>)</button>
-            <span th:text="'发布于：' + ${article.createdAt}"></span>
+            <button>
+                <img th:src="@{/img/support.png}" alt="点赞" class="icon">
+                <span th:text="${article.like_count}">0</span>
+            </button>
+            <button>
+                <img th:src="@{/img/comment.png}" alt="评论" class="icon">
+                <span th:text="${article.comment_count}">0</span>
+            </button>
+            <button>
+                <img th:src="@{/img/browse.png}" alt="浏览" class="icon">
+                <span th:text="${article.view_count}">0</span>
+            </button>
+            <span th:text="'发布于：' + ${article.created_at}">2025-01-01</span>
         </footer>
     </article>
 </div>

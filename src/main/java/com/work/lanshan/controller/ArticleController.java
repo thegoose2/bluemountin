@@ -1,6 +1,9 @@
 package com.work.lanshan.controller;
 
 import com.work.lanshan.Components.MarkdownUtils;
+import com.work.lanshan.Entety.Role;
+import com.work.lanshan.Mapper.Usermapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import com.work.lanshan.Entety.Article;
@@ -28,9 +31,11 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
+    @Autowired
+    private Usermapper usermapper;
     @GetMapping("/{id}")
-    public List<Article> getArticle(@PathVariable Long id) {
-        return articleService.getArticle(id);
+    public List<Article> getArticle(@PathVariable int id,int status) {
+        return articleService.getArticle(id, status);
     }
 
     @GetMapping
@@ -43,22 +48,33 @@ public class ArticleController {
     public String createArticle0(@RequestParam("content") String content, @RequestParam("title") String title,Article article,Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users currentUser = (Users) authentication.getPrincipal();
-        Long userid = (long) currentUser.getId(); // 🎉 直接获取 userId
-        article.setAuthorId(userid);
+        int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
+        article.setAuthor_id(userid);
         article.setContent(content);
         article.setTitle(title);
         article.setStatus(0); // 默认草稿
-        article.setViewCount(0);
-        article.setLikeCount(0);
-        article.setCommentCount(0);
+        article.setView_count(0);
+        article.setLike_count(0);
+        article.setComment_count(0);
         articleService.createArticle(article);
-        List<Article> articleList = articleService.getArticle(userid);
+        boolean T=false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if(role.getName().equals("ROLE_ADMIN")){
+                T=true;
+            }
+        }
+        List<Article> articleList = articleService.getArticle(userid,1);
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html); // 替换内容
         }
+
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("user", user);
         model.addAttribute("articleList", articleList);
         model.addAttribute("frag", "profile");
+        model.addAttribute("TT", T);
         return "home"; // home.html 模板中包含 fragments/profile.html 片段
     }
 
@@ -66,28 +82,39 @@ public class ArticleController {
     public String createArticle1(@RequestParam("content") String content, @RequestParam("title") String title, Article article, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users currentUser = (Users) authentication.getPrincipal();
-        Long userid = (long) currentUser.getId(); // 🎉 直接获取 userId
-        article.setAuthorId(userid);
+        int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
+        article.setAuthor_id(userid);
         article.setContent(content);
         article.setTitle(title);
         article.setStatus(1); // 发布待审和文章
-        article.setViewCount(0);
-        article.setLikeCount(0);
-        article.setCommentCount(0);
+        article.setView_count(0);
+        article.setLike_count(0);
+        article.setComment_count(0);
         articleService.createArticle(article);
-        List<Article> articleList = articleService.getArticle(userid);
+        boolean T=false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if(role.getName().equals("ROLE_ADMIN")){
+                T=true;
+            }
+        }
+        List<Article> articleList = articleService.getArticle(userid,1);
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html); // 替换内容
         }
+
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("user", user);
         model.addAttribute("articleList", articleList);
         model.addAttribute("frag", "profile");
+        model.addAttribute("TT", T);
         return "home"; // home.html 模板中包含 fragments/profile.html 片段
     }
 
 
     @PutMapping("/{id}")
-    public String updateArticle(@PathVariable Long id, @RequestBody Article article) {
+    public String updateArticle(@PathVariable int id, @RequestBody Article article) {
         article.setId(id);
         articleService.updateArticle(article);
         return "文章更新成功";

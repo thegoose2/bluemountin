@@ -6,16 +6,16 @@ import java.time.LocalDateTime;
 
 @Data
 public class Article {
-    private Long id;
+    private int id;
     private String title;
     private String content;
-    private Long authorId;
+    private int author_id;
     private Integer status;  // 0-草稿 1-待审核 2-已发布 3-回收站
-    private Integer viewCount;
-    private Integer likeCount;
-    private Integer commentCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime publishedAt;
-    private LocalDateTime deletedAt;
+    private Integer view_count;
+    private Integer like_count;
+    private Integer comment_count;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
+    private LocalDateTime published_at;
+    private LocalDateTime deleted_at;
 }

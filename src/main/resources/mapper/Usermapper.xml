@@ -7,6 +7,9 @@
         insert into users(username, password, email)
         values (#{username}, #{password}, #{email})
     </insert>
+    <update id="updateAvatar">
+        UPDATE users SET img = #{avatarUrl} WHERE id = #{userId}
+    </update>
 
     <select id="findbyusername" resultType="com.work.lanshan.Entety.Users">
         select * from users where username =#{username}
