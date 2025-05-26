@@ -17,5 +17,6 @@
     <mappers>
         <mapper resource="mapper/Usermapper.xml"/>
         <mapper resource="mapper/ArticleMapper.xml"/>
+        <mapper resource="mapper/CommentMapper.xml"/>
     </mappers>
 </configuration>

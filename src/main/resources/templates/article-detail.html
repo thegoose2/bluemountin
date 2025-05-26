@@ -19,17 +19,64 @@
         <!-- Markdown 渲染内容 -->
     </div>
 
-<!--    &lt;!&ndash; 评论区 &ndash;&gt;-->
-<!--    <div class="comments-section">-->
-<!--        <h3>评论</h3>-->
-<!--        <div th:if="${#lists.isEmpty(article.comments)}">-->
-<!--            暂无评论，快来抢沙发！-->
-<!--        </div>-->
-<!--        <div th:each="comment : ${article.comments}" class="comment">-->
-<!--            <div class="comment-author" th:text="${comment.author}">评论者</div>-->
-<!--            <div class="comment-content" th:text="${comment.content}">评论内容</div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!-- 评论区 -->
+    <div class="comments-section">
+
+        <!-- 发表评论 -->
+        <div class="add-comment">
+            <h3>发表评论</h3>
+            <form th:action="@{/comment}" method="post">
+                <input type="hidden" name="articleId" th:value="${article.id}" />
+                <input type="hidden" name="parentId" value="" />
+                <input type="hidden" name="userId" value="1" /> <!-- 模拟用户 -->
+                <textarea name="content" placeholder="写下你的评论..." required></textarea>
+                <button type="submit">发表评论</button>
+            </form>
+        </div>
+
+        <h3>评论</h3>
+
+        <!-- 一级评论 -->
+        <div th:each="comment : ${comments}" class="comment">
+            <div class="comment-author" th:text="${comment.username}">评论者</div>
+            <div class="comment-content" th:text="${comment.content}">评论内容</div>
+
+            <!-- 子评论（默认只显示前两条） -->
+            <div class="replies">
+                <div th:each="reply, stat : ${comment.replies}"
+                     th:if="${stat.index < 2}" class="reply">
+                    <span class="reply-author" th:text="${reply.username}">子评论者</span>：
+                    <span class="reply-content" th:text="${reply.content}">子评论内容</span>
+                </div>
+
+                <!-- 剩余子评论隐藏 -->
+                <div th:each="reply, stat : ${comment.replies}"
+                     th:if="${stat.index >= 2}"
+                     class="reply hidden-reply"
+                     style="display: none;">
+                    <span class="reply-author" th:text="${reply.username}">子评论者</span>：
+                    <span class="reply-content" th:text="${reply.content}">子评论内容</span>
+                </div>
+
+                <!-- 查看全部按钮 -->
+                <button type="button" class="show-all-btn"
+                        th:if="${#lists.size(comment.replies) > 2}"
+                        onclick="this.closest('.replies').querySelectorAll('.hidden-reply').forEach(e => e.style.display='block'); this.style.display='none';">
+                    查看全部回复
+                </button>
+            </div>
+
+            <!-- 回复表单 -->
+            <form th:action="@{/comment}" method="post" class="reply-form">
+                <input type="hidden" name="articleId" th:value="${article.id}" />
+                <input type="hidden" name="parentId" th:value="${comment.id}" />
+                <input type="hidden" name="userId" value="1" />
+                <textarea name="content" placeholder="回复该评论..." required></textarea>
+                <button type="submit">回复</button>
+            </form>
+        </div>
+    </div>
+
 </div>
 
 </body>

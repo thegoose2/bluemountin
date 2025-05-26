@@ -2,9 +2,11 @@ package com.work.lanshan.controller;
 
 import com.work.lanshan.Components.MarkdownUtils;
 import com.work.lanshan.Entety.Article;
+import com.work.lanshan.Entety.Comment;
 import com.work.lanshan.Entety.Role;
 import com.work.lanshan.Entety.Users;
 import com.work.lanshan.config.ArticleService;
+import com.work.lanshan.config.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +29,9 @@ public class web {
         this.articleService = articleService;
     }
 
+
+    @Autowired
+    private CommentService commentService;
 
     // 首页，显示动态feed内容
     @GetMapping({"/", "/home"})
@@ -271,6 +276,8 @@ public class web {
         Article article = articleService.findarticle(id); // 获取文章及评论
         String html = MarkdownUtils.markdownToHtml(article.getContent());
         article.setContent(html);
+        List<Comment> comments = commentService.getCommentsForArticle(id);
+        model.addAttribute("comments", comments);
         model.addAttribute("user", currentUser);
         model.addAttribute("article", article);
         return "article-detail"; // 对应 templates/article-detail.html

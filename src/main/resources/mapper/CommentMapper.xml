@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.work.lanshan.Mapper.CommentMapper">
+
+    <!-- 查文章的所有一级评论 -->
+    <select id="findByArticleId" resultType="com.work.lanshan.Entety.Comment">
+        SELECT c.*, u.username
+        FROM comment c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.article_id = #{articleId} AND c.parent_id IS NULL
+        ORDER BY c.create_time ASC
+    </select>
+
+    <!-- 查某条评论的子评论 -->
+    <select id="findRepliesByParentId" resultType="com.work.lanshan.Entety.Comment">
+        SELECT c.*, u.username
+        FROM comment c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.parent_id = #{parentId}
+        ORDER BY c.create_time ASC
+    </select>
+
+    <insert id="insertComment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment(article_id, user_id, content, parent_id, create_time)
+        VALUES(#{articleId}, #{userId}, #{content}, #{parentId}, NOW())
+    </insert>
+
+</mapper>
