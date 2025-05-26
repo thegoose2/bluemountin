@@ -8,11 +8,14 @@ import java.util.List;
 @Data
 public class Comment {
     private int id;
-    private Long articleId;
-    private Long userId;
+    private Long article_id;
+    private int user_id;
     private String content;
-    private Integer parentId;
-    private LocalDateTime createTime;
+    private Integer parent_id;
+    private LocalDateTime create_time;
+    private String reply_to_username;  // <--- 新增
+    private Integer reply_parent_id;
+    private String user_img;
 
     // 非数据库字段
     private List<Comment> replies; // 用于装子评论

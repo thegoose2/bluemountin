@@ -6,7 +6,7 @@
 
     <!-- 查文章的所有一级评论 -->
     <select id="findByArticleId" resultType="com.work.lanshan.Entety.Comment">
-        SELECT c.*, u.username
+        SELECT c.*, u.username,u.img
         FROM comment c
         JOIN users u ON c.user_id = u.id
         WHERE c.article_id = #{articleId} AND c.parent_id IS NULL
@@ -15,16 +15,20 @@
 
     <!-- 查某条评论的子评论 -->
     <select id="findRepliesByParentId" resultType="com.work.lanshan.Entety.Comment">
-        SELECT c.*, u.username
+        SELECT c.*, u.username,u.img
         FROM comment c
         JOIN users u ON c.user_id = u.id
         WHERE c.parent_id = #{parentId}
         ORDER BY c.create_time ASC
     </select>
 
+    <select id="findbyId" resultType="com.work.lanshan.Entety.Comment">
+        select * from comment where id = #{id}
+    </select>
+
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO comment(article_id, user_id, content, parent_id, create_time)
-        VALUES(#{articleId}, #{userId}, #{content}, #{parentId}, NOW())
+        INSERT INTO comment(article_id, user_id, content, parent_id, reply_to_username, create_time,username,reply_parent_id,user_img)
+        VALUES(#{article_id}, #{user_id}, #{content}, #{parent_id}, #{reply_to_username}, NOW(),#{username},#{reply_parent_id},#{user_img})
     </insert>
 
 </mapper>

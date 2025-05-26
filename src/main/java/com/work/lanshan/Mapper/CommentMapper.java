@@ -12,4 +12,6 @@ public interface CommentMapper {
     List<Comment> findRepliesByParentId(int parentId);
 
     void insertComment(Comment comment);
+
+    Comment findbyId(int id);
 }

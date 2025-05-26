@@ -4,10 +4,12 @@
     <meta charset="UTF-8" />
     <title th:text="${article.title}">文章详情</title>
     <link rel="stylesheet" th:href="@{/css/article-detail.css}" />
+    <script th:src="@{/js/comment.js}" defer></script>
 </head>
 <body>
 
 <div class="container">
+
     <!-- 作者信息 -->
     <div class="author-info">
         作者：<span th:text="${user.username}">匿名</span> |
@@ -19,61 +21,98 @@
         <!-- Markdown 渲染内容 -->
     </div>
 
+    <!-- 评论表单 -->
+    <div class="comment-form">
+        <form action="/comment" method="post">
+            <input type="hidden" name="article_id" th:value="${article.id}">
+            <textarea name="content" placeholder="写下你的评论..." required></textarea>
+            <button type="submit">发表评论</button>
+        </form>
+    </div>
+
     <!-- 评论区 -->
     <div class="comments-section">
-
-        <!-- 发表评论 -->
-        <div class="add-comment">
-            <h3>发表评论</h3>
-            <form th:action="@{/comment}" method="post">
-                <input type="hidden" name="articleId" th:value="${article.id}" />
-                <input type="hidden" name="parentId" value="" />
-                <input type="hidden" name="userId" value="1" /> <!-- 模拟用户 -->
-                <textarea name="content" placeholder="写下你的评论..." required></textarea>
-                <button type="submit">发表评论</button>
-            </form>
-        </div>
-
         <h3>评论</h3>
 
-        <!-- 一级评论 -->
+        <!-- 每条一级评论 -->
         <div th:each="comment : ${comments}" class="comment">
-            <div class="comment-author" th:text="${comment.username}">评论者</div>
-            <div class="comment-content" th:text="${comment.content}">评论内容</div>
 
-            <!-- 子评论（默认只显示前两条） -->
-            <div class="replies">
-                <div th:each="reply, stat : ${comment.replies}"
-                     th:if="${stat.index < 2}" class="reply">
-                    <span class="reply-author" th:text="${reply.username}">子评论者</span>：
-                    <span class="reply-content" th:text="${reply.content}">子评论内容</span>
+            <!-- 一级评论内容 -->
+            <div class="comment-box">
+                <img th:src="@{${comment.user_img}}" alt="头像" class="avatar">
+                <div class="comment-body">
+                    <div class="comment-author" th:text="${comment.username}"></div>
+                    <div class="comment-content" th:text="${comment.content}"></div>
+
+                    <div class="comment-footer">
+                        <div class="actions">
+                            <img th:src="@{/img/support.png}" class="icon">
+                            <img th:src="@{/img/comment.png}" class="icon"
+                                 th:onclick="'toggleReplyForm(' + ${comment.id} + ')'">
+                        </div>
+                        <div class="comment-time" th:text="${comment.create_time}"></div>
+                    </div>
                 </div>
-
-                <!-- 剩余子评论隐藏 -->
-                <div th:each="reply, stat : ${comment.replies}"
-                     th:if="${stat.index >= 2}"
-                     class="reply hidden-reply"
-                     style="display: none;">
-                    <span class="reply-author" th:text="${reply.username}">子评论者</span>：
-                    <span class="reply-content" th:text="${reply.content}">子评论内容</span>
-                </div>
-
-                <!-- 查看全部按钮 -->
-                <button type="button" class="show-all-btn"
-                        th:if="${#lists.size(comment.replies) > 2}"
-                        onclick="this.closest('.replies').querySelectorAll('.hidden-reply').forEach(e => e.style.display='block'); this.style.display='none';">
-                    查看全部回复
-                </button>
             </div>
 
-            <!-- 回复表单 -->
-            <form th:action="@{/comment}" method="post" class="reply-form">
-                <input type="hidden" name="articleId" th:value="${article.id}" />
-                <input type="hidden" name="parentId" th:value="${comment.id}" />
-                <input type="hidden" name="userId" value="1" />
-                <textarea name="content" placeholder="回复该评论..." required></textarea>
+            <hr class="comment-divider">
+
+            <!-- 一级评论回复框 -->
+            <form th:id="'replyForm' + ${comment.id}" class="reply-form" action="/comment" method="post" style="display:none">
+                <input type="hidden" name="article_id" th:value="${article.id}">
+                <input type="hidden" name="parent_id" th:value="${comment.id}">
+                <textarea name="content" placeholder="回复内容..." required></textarea>
                 <button type="submit">回复</button>
             </form>
+
+            <!-- 二级评论区域（子评论） -->
+            <div class="replies collapsed" th:id="'replyList' + ${comment.id}">
+
+                <!-- 每条子评论 -->
+                <div class="reply-box" th:each="reply : ${comment.replies}">
+                    <img th:src="@{${reply.user_img}}" alt="头像" class="avatar-small">
+                    <div class="reply-body">
+                        <div class="reply-author" th:text="${reply.username}"></div>
+
+                        <div class="reply-content-wrapper">
+                            <div class="reply-content collapsed" th:id="'replyContent' + ${reply.id}">
+                                <span th:if="${reply.reply_to_username != null}">
+                                    回复 @<span th:text="${reply.reply_to_username}"></span>：
+                                </span>
+                                <span th:text="${reply.content}"></span>
+                            </div>
+                        </div>
+
+                        <div class="reply-footer">
+                            <div class="actions">
+                                <img th:src="@{/img/support.png}" class="icon">
+                                <img th:src="@{/img/comment.png}" class="icon"
+                                     th:onclick="'toggleReplyForm(' + ${reply.id} + ')'">
+                            </div>
+                            <div class="reply-time" th:text="${reply.create_time}"></div>
+                        </div>
+                    </div>
+
+                    <!-- 子评论回复框 -->
+                    <form th:id="'replyForm' + ${reply.id}" class="reply-form" action="/comment" method="post" style="display:none; margin-left: 20px;">
+                        <input type="hidden" name="article_id" th:value="${article.id}">
+                        <input type="hidden" name="parent_id" th:value="${comment.id}">
+                        <input type="hidden" name="reply_parent_id" th:value="${reply.id}">
+                        <textarea name="content" placeholder="回复内容..." required></textarea>
+                        <button type="submit">回复</button>
+                    </form>
+
+                    <hr class="reply-divider">
+                </div>
+            </div>
+
+            <!-- 展开/收起更多回复按钮 -->
+            <button class="toggle-button"
+                    th:id="'toggleBtn' + ${comment.id}"
+                    th:if="${#lists.size(comment.replies) > 3}"
+                    th:onclick="'toggleReplies(' + ${comment.id} + ')'">
+                展开更多回复
+            </button>
         </div>
     </div>
 

@@ -23,14 +23,10 @@ public class CommentService {
     }
 
     public void addComment(Comment comment) {
-        // 如果 parentId 不是 null，要确认是一级评论
-        if (comment.getParentId() != null) {
-            Comment parent = commentMapper.findRepliesByParentId(comment.getParentId())
-                    .stream().findFirst().orElse(null);
-            if (parent != null && parent.getParentId() != null) {
-                throw new RuntimeException("只允许回复一级评论");
-            }
-        }
-        commentMapper.insertComment(comment);
+          commentMapper.insertComment(comment);
+    }
+
+    public Comment findbyId(int id) {
+        return commentMapper.findbyId(id);
     }
 }

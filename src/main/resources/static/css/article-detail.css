@@ -26,7 +26,7 @@ body {
     font-size: 17px;
     color: #333;
     line-height: 1.8;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
 }
 /* 发表评论区域 */
 .add-comment {
@@ -45,12 +45,6 @@ body {
     font-size: 14px;
 }
 
-/* 子评论 */
-.replies {
-    margin-left: 30px;
-    margin-top: 10px;
-}
-
 .reply {
     font-size: 14px;
     margin-bottom: 5px;
@@ -59,7 +53,8 @@ body {
 
 .reply-author {
     font-weight: bold;
-    color: #2c3e50;
+    color: #ed7e2d;
+    font-size: 15px;
 }
 
 /* 查看全部按钮 */
@@ -89,3 +84,190 @@ body {
     font-size: 13px;
 }
 
+.actions .icon {
+    width: 18px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.avatar-small {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-left: 20px;
+}
+
+.headd{
+    display: flex;
+    align-items: center; /* 垂直居中头像和用户名 */
+    gap: 20px;
+}
+
+.comment-box {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.comment-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-author {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #27b4d5;
+}
+
+.comment-content {
+    margin-bottom: 8px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.comment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.actions .icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.comment-divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
+}
+
+.reply-box {
+    display: flex;
+    align-items: flex-start;
+    margin-left: 50px; /* 缩进表示层级 */
+    margin-bottom: 10px;
+}
+
+.avatar-small {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.reply-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.reply-author {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.reply-content {
+    margin-bottom: 8px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.reply-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85em;
+    color: #666;
+}
+
+.actions .icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.reply-divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 6px 0 10px 50px;
+}
+
+.reply-content-wrapper {
+    position: relative;
+}
+
+.reply-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    line-height: 1.4;
+}
+
+/* 折叠状态，最多显示三行 */
+.reply-content.collapsed {
+    max-height: 4.2em; /* 3行 × 1.4 行高 */
+}
+
+/* 展开状态，取消限制 */
+.reply-content.expanded {
+    max-height: none;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-top: 4px;
+}
+
+.replies {
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    margin-left: 30px;
+    margin-top: 10px;
+}
+
+/* 默认折叠状态 */
+.replies.collapsed {
+    max-height: 240px; /* 可调：约3-4条子评论高度 */
+}
+
+/* 展开状态 */
+.replies.expanded {
+    max-height: none;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 4px 0;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-top: 4px;
+}
