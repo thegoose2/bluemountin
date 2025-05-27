@@ -15,6 +15,7 @@ public class ArticleService {
     }
 
     public List<Article>  getArticle(int id,int status) {
+
         return articleMapper.selectByAuthorIdandstatus(id, status);
     }
 
@@ -41,6 +42,18 @@ public class ArticleService {
 
     public int deleteArticle(Long id) {
         return articleMapper.delete(id);
+    }
+
+    public List<Article> selectAll(int status) {
+        return articleMapper.selectAll(status);
+    }
+
+    public int updataSupport(int article_id){
+        return articleMapper.updatasupport(article_id);
+    }
+
+    public int updatalike(int article_id){
+        return articleMapper.updatacommentcount(article_id);
     }
 
 

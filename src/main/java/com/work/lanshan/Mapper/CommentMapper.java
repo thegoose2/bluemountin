@@ -14,4 +14,6 @@ public interface CommentMapper {
     void insertComment(Comment comment);
 
     Comment findbyId(int id);
+
+    void updataSupport(int id);
 }

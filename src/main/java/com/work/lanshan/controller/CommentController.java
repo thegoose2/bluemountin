@@ -2,6 +2,7 @@ package com.work.lanshan.controller;
 
 import com.work.lanshan.Entety.Comment;
 import com.work.lanshan.Entety.Users;
+import com.work.lanshan.Mapper.CommentMapper;
 import com.work.lanshan.config.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -9,11 +10,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class CommentController {
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private CommentMapper commentMapper;
 
     @PostMapping("/comment")
     public String postComment(@ModelAttribute Comment comment) {
@@ -38,6 +46,18 @@ public class CommentController {
 
         // 重定向回文章页
         return "redirect:/article/" + comment.getArticle_id();
+    }
+
+    //点赞机制
+    @PostMapping("/like")
+    @ResponseBody
+    public Map<String, Object> postLike(@RequestParam("comment_id") int id) {
+        commentMapper.updataSupport(id);
+        Comment comment = commentMapper.findbyId(id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("support_count", comment.getSupport_count());
+        return response;
     }
 
 }

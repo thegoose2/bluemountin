@@ -45,12 +45,19 @@
                     <div class="comment-content" th:text="${comment.content}"></div>
 
                     <div class="comment-footer">
-                        <div class="actions">
-                            <img th:src="@{/img/support.png}" class="icon">
-                            <img th:src="@{/img/comment.png}" class="icon"
-                                 th:onclick="'toggleReplyForm(' + ${comment.id} + ')'">
-                        </div>
-                        <div class="comment-time" th:text="${comment.create_time}"></div>
+                                <!-- 在评论中 -->
+                                <button th:onclick="'likeComment(' + ${comment.id} + ')'">
+                                    <img th:src="@{/img/support.png}"
+                                         class="icon-like"
+                                         th:id="'like-' + ${comment.id}"
+                                         th:data-id="${comment.id}">
+                                    <span th:id="'like-count-' + ${comment.id}" th:text="${comment.support_count}">0</span>
+                                </button>
+                                <button>
+                                    <img th:src="@{/img/comment.png}" class="icon"
+                                         th:onclick="'toggleReplyForm(' + ${comment.id} + ')'">
+                                </button>
+                                <div class="comment-time" th:text="${comment.create_time}"></div>
                     </div>
                 </div>
             </div>
@@ -85,7 +92,13 @@
 
                         <div class="reply-footer">
                             <div class="actions">
-                                <img th:src="@{/img/support.png}" class="icon">
+                                <!-- 在评论中 -->
+                                <img th:src="@{/img/support.png}"
+                                     class="icon"
+                                     th:id="'like-' + ${reply.id}"
+                                     th:data-id="${reply.id}"
+                                     th:onclick="'likeComment(' + ${reply.id} + ')'">
+                                <span th:id="'like-count-' + ${reply.id}" th:text="${reply.support_count}">0</span>
                                 <img th:src="@{/img/comment.png}" class="icon"
                                      th:onclick="'toggleReplyForm(' + ${reply.id} + ')'">
                             </div>

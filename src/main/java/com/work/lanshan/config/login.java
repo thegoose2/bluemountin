@@ -32,10 +32,10 @@ public class login {
         http
                 .authorizeHttpRequests(auth -> auth
                         // 公共页面允许所有人访问（登录页、静态资源等）
-                        .requestMatchers("/login/**", "/css/**", "/js/**", "/img/**","/", "/home/**","/registerer/**","/edit/**","/editor/**","/static/**").permitAll()
+                        .requestMatchers("/login/**", "/css/**", "/js/**", "/img/**","/", "/home/**","/registerer/**","/edit/**","/editor/**","/static/**","/uploads/**").permitAll()
 
                         // 用户页面，如发帖、资料页，需要 USER 或 ADMIN 权限
-                        .requestMatchers("/profile","/post/**","/articles/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/profile/**","/articles/**").hasAnyRole("USER", "ADMIN")
 
                         // 管理员页面需要 ADMIN 权限
                         .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -57,7 +57,14 @@ public class login {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
-                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)); // ✅ 允许 iframe 同源访问// ✅ 正确的新方式
+                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .logout(logout -> logout
+                .logoutUrl("/logout")                    // 指定登出请求的 URL（默认就是 /logout，可省略）
+                .logoutSuccessUrl("/home")             // 登出后跳转到登录页
+                .invalidateHttpSession(true)            // 清除 session
+                .deleteCookies("JSESSIONID")            // 删除 cookie
+                .permitAll()
+                );// ✅ 允许 iframe 同源访问// ✅ 正确的新方式
         return http.build();
     }
 

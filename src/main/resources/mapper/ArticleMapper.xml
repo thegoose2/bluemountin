@@ -14,6 +14,11 @@
     <update id="softDelete">
         UPDATE article SET status=3, deleted_at=NOW() WHERE id=#{id}
     </update>
+    <update id="updatasupport">
+        update article
+        set like_count = like_count + 1
+        where id = #{article_id}
+    </update>
     <delete id="delete">
         DELETE FROM article WHERE id=#{id}
     </delete>
@@ -26,5 +31,28 @@
     <select id="selectById" resultType="com.work.lanshan.Entety.Article">
         select * from article where id =#{id}
     </select>
+    <select id="selectAll" resultType="com.work.lanshan.Entety.Article">
+        SELECT
+            a.*,
+            u.username AS author_name,         -- 映射到 Article.author_name
+            u.img AS author_avatar_img         -- 映射到 Article.author_avatar_img
+        FROM
+            article a
+        JOIN
+            users u ON a.author_id = u.id
+        WHERE
+            a.status = #{status};
+
+    </select>
+
+    <update id="updatacommentcount">
+        UPDATE article
+        SET comment_count = (
+            SELECT COUNT(*)
+            FROM comment
+            WHERE comment.article_id = article.id
+        )
+        WHERE id = #{article_id};
+    </update>
 
 </mapper>

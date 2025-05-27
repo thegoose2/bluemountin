@@ -18,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -36,7 +38,13 @@ public class web {
     // 首页，显示动态feed内容
     @GetMapping({"/", "/home"})
     public String home(Model model) {
-        model.addAttribute("frag", "feed"); // 对应 fragments/feed.html
+        List<Article> articleList = articleService.selectAll(1);
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html); // 替换内容
+        }
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("frag", "feed");
         return "home";
     }
 
@@ -49,14 +57,16 @@ public class web {
         boolean T=false;
         List<Role> roles = usermapper.getUserRolesByUid(userid);
         for (Role role : roles) {
-            if(role.getName().equals("ROLE_ADMIN")){
-                T=true;
+            if (role.getName().equals("ROLE_ADMIN")) {
+                T = true;
+                break;
             }
         }
         List<Article> articleList = articleService.getArticle(userid,1);
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
-            aRticle.setContent(html); // 替换内容
+            aRticle.setContent(html);
+            articleService.updatalike(aRticle.getId());
         }
 
         Users user = usermapper.findbyusername(currentUser.getUsername());
@@ -69,7 +79,8 @@ public class web {
 
     // 登录页
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        model.addAttribute("frag", "login-login");
         return "login";
     }
 
@@ -124,29 +135,6 @@ public class web {
         model.addAttribute("frags", "login-login");
         return "login";
     }
-//自定义登录控制器
-//    @PostMapping("/login/login")
-//    public String tologin(Users user, Model model) {
-//        System.out.println(usermapper.findbyusername(user.getUsername()));
-//        if(usermapper.findbyusername(user.getUsername()) == null) {
-//            System.out.println("2");
-//            model.addAttribute("error","用户不存在！");
-//            model.addAttribute("frags", "login-login");
-//            return "login";
-//        }
-//        else{
-//            if(passwordEncoder.matches(user.getPassword(), usermapper.findbyusername(user.getUsername()).getPassword())) {
-//                model.addAttribute("frag","profile");
-//                model.addAttribute("username", user.getUsername());
-//                return "home";
-//            }
-//            else{
-//                model.addAttribute("frags", "login-login");
-//                model.addAttribute("error","密码错误！");
-//                return "login";
-//            }
-//        }
-//    }
 
     @GetMapping("/edit")
     public String edit() {
@@ -179,6 +167,7 @@ public class web {
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html); // 替换内容
+            articleService.updatalike(aRticle.getId());
         }
 
         String avatarUrl = "/uploads/" + fileName;
@@ -201,14 +190,16 @@ public class web {
         boolean T=false;
         List<Role> roles = usermapper.getUserRolesByUid(userid);
         for (Role role : roles) {
-            if(role.getName().equals("ROLE_ADMIN")){
-                T=true;
+            if (role.getName().equals("ROLE_ADMIN")) {
+                T = true;
+                break;
             }
         }
         List<Article> articleList = articleService.getArticle(userid,temp);
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html); // 替换内容
+            articleService.updatalike(aRticle.getId());
         }
 
         Users user = usermapper.findbyusername(currentUser.getUsername());
@@ -216,7 +207,7 @@ public class web {
         model.addAttribute("frag", "profile");
         model.addAttribute("user", user);
         model.addAttribute("TT", T);
-        return "home";
+        return "fragments/profile :: article-main-content";
     }
 
     @GetMapping("/profile/fragment")
@@ -235,6 +226,8 @@ public class web {
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html);
+            articleService.updatalike(aRticle.getId());
+
         }
 
         Users user = usermapper.findbyusername(currentUser.getUsername());
@@ -246,26 +239,14 @@ public class web {
 
     @GetMapping("/gate/fragment")
     public String gateFragment(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Users currentUser = (Users) authentication.getPrincipal();
-        int userid = (int) currentUser.getId();
-        boolean T = false;
-        List<Role> roles = usermapper.getUserRolesByUid(userid);
-        for (Role role : roles) {
-            if (role.getName().equals("ROLE_ADMIN")) {
-                T = true;
-            }
-        }
-        List<Article> articleList = articleService.getArticle(userid, 1);
+        List<Article> articleList = articleService.selectAll(1);
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html);
+            articleService.updatalike(aRticle.getId());
         }
-
-        Users user = usermapper.findbyusername(currentUser.getUsername());
-        model.addAttribute("user", user);
         model.addAttribute("articleList", articleList);
-        model.addAttribute("TT", T);
+        model.addAttribute("frag", "feed");
         return "fragments/feed :: content"; // 只返回中间部分
     }
 
@@ -283,6 +264,15 @@ public class web {
         return "article-detail"; // 对应 templates/article-detail.html
     }
 
-
-
+    @PostMapping("/like/article")
+    @ResponseBody
+    public Map<String, Object> likeArticle(@RequestParam("article_id") int article_id) {
+        System.out.println(article_id);
+        articleService.updataSupport(article_id);
+        Article article = articleService.findarticle(article_id);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("like_count", article.getLike_count());
+        return response;
+    }
 }

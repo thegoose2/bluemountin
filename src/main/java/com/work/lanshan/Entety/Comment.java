@@ -16,6 +16,7 @@ public class Comment {
     private String reply_to_username;  // <--- 新增
     private Integer reply_parent_id;
     private String user_img;
+    private int support_count;
 
     // 非数据库字段
     private List<Comment> replies; // 用于装子评论

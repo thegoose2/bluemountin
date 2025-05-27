@@ -2,11 +2,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
-body {
-    font-family: Arial, sans-serif;
-}
 .top-bar {
     position: relative;
     width: 100%;
@@ -154,10 +152,10 @@ main {
 }
 
 .post header img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 10px;
+    width: 60px;         /* 设置头像大小 */
+    height: 60px;
+    border-radius: 50%;  /* 圆形头像 */
+    object-fit: cover;
 }
 
 .user-info{
@@ -186,6 +184,23 @@ main {
     align-items: center; /* 垂直居中头像和用户名 */
     gap: 20px;
     bottom: 60px;
+}
+
+.login-out{
+    position: absolute;
+    bottom: 60px;
+    left: 150px;
+}
+
+.login-out button{
+    border-radius: 20px;
+    background-color: #ee7e71;
+    transition:  0.5s ease;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    width: 80px;
+    height: 30px;
 }
 
 .form1{
@@ -240,7 +255,7 @@ main {
 }
 
 .post-content img {
-    max-width: 100%;
+    max-width: 50%;
     height: auto;
 }
 
@@ -273,6 +288,15 @@ main {
     height: 20px;
     margin-right: 5px;
 }
+
+.post footer .icon-support {
+    width: 60px;
+    height: 60px;
+    margin-right: 5px;
+    filter: grayscale(100%); /* 默认灰度显示 */
+    transition: filter 0.3s ease;
+}
+
 footer {
     text-align: center;
     padding: 10px;
@@ -290,15 +314,15 @@ footer {
     padding: 10px 0;
     text-align: center;
     text-decoration: none;
-    border: 1px solid #ccc;
-    background-color: #f5f5f5;
+    border: 1px solid #171515;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    background-color: #7c98f4;
     color: #333;
     font-weight: bold;
     transition: background-color 0.3s;
-}
-
-.filter-btn:hover {
-    background-color: #e0e0e0;
+    cursor: pointer;
 }
 
 .filter-btn.active {
@@ -314,11 +338,12 @@ footer {
 }
 
 .read-more {
-    display: none; /* 默认隐藏 */
-    margin-top: 8px;
+    margin-top: 10px;
     color: #007bff;
     font-size: 14px;
     text-decoration: none;
+    transition: 0.3s ease;
+    cursor: pointer;
 }
 
 .read-more:hover {

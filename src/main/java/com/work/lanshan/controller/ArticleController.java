@@ -1,6 +1,7 @@
 package com.work.lanshan.controller;
 
 import com.work.lanshan.Components.MarkdownUtils;
+import com.work.lanshan.Entety.Comment;
 import com.work.lanshan.Entety.Role;
 import com.work.lanshan.Mapper.Usermapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,7 @@ public class ArticleController {
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html); // 替换内容
+            articleService.updatalike(aRticle.getId());
         }
 
         Users user = usermapper.findbyusername(currentUser.getUsername());
@@ -102,6 +104,7 @@ public class ArticleController {
         for (Article aRticle : articleList) {
             String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
             aRticle.setContent(html); // 替换内容
+            articleService.updatalike(aRticle.getId());
         }
 
         Users user = usermapper.findbyusername(currentUser.getUsername());

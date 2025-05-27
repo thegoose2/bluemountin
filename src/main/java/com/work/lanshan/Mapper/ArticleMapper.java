@@ -15,5 +15,7 @@ public interface ArticleMapper {
     int softDelete(Long id);
     int delete(Long id);
     Article selectById(int id);
-
+    List<Article> selectAll(int status);
+    int updatasupport(int article_id);
+    int updatacommentcount(int article_id);
 }

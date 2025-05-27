@@ -3,6 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.work.lanshan.Mapper.CommentMapper">
+    <update id="updataSupport">
+        update comment
+        set support_count = support_count + 1
+        where id = #{id}
+    </update>
 
     <!-- 查文章的所有一级评论 -->
     <select id="findByArticleId" resultType="com.work.lanshan.Entety.Comment">
@@ -27,8 +32,8 @@
     </select>
 
     <insert id="insertComment" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO comment(article_id, user_id, content, parent_id, reply_to_username, create_time,username,reply_parent_id,user_img)
-        VALUES(#{article_id}, #{user_id}, #{content}, #{parent_id}, #{reply_to_username}, NOW(),#{username},#{reply_parent_id},#{user_img})
+        INSERT INTO comment(article_id, user_id, content, parent_id, reply_to_username, create_time,username,reply_parent_id,user_img,support_count)
+        VALUES(#{article_id}, #{user_id}, #{content}, #{parent_id}, #{reply_to_username}, NOW(),#{username},#{reply_parent_id},#{user_img},#{support_count})
     </insert>
 
 </mapper>

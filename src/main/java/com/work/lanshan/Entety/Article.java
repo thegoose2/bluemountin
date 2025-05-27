@@ -18,4 +18,6 @@ public class Article {
     private LocalDateTime updated_at;
     private LocalDateTime published_at;
     private LocalDateTime deleted_at;
+    private String author_name;
+    private String author_avatar_img;
 }

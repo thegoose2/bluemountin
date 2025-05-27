@@ -2,23 +2,38 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <div class="feed" th:fragment="content">
-  <article class="post">
+  <article class="post" th:each="article : ${articleList}">
     <header>
-      <img src="avatar.jpg" alt="头像">
       <div class="user-info">
-        <h3>用户名</h3>
-        <span>@username</span>
+        <img th:src="@{${article.author_avatar_img}}" alt="头像">
+        <span th:text="@{${article.author_name}}">@author_name</span>
       </div>
     </header>
     <div class="post-content">
-      <p>这是一条示例帖子内容……</p>
-      <img src="post-image.jpg" alt="帖子图片">
+      <div class="content-snippet" th:utext="${article.content}">这是一条示例帖子内容……</div>
+      <a th:href="@{'/article/' + ${article.id}}" class="read-more">阅读全文</a>
     </div>
     <footer>
-      <button>点赞</button>
-      <button>评论</button>
-      <button>浏览</button>
-      <span>发布于：2025-05-19</span>
+      <button th:onclick="'likearticle(\'' + ${article.id} + '\')'">
+        <img
+                th:src="@{/img/support.png}"
+                th:id="'article-like-' + ${article.id}"
+                th:data-id="${article.id}"
+                alt="点赞"
+                class="icon-support">
+        <span th:id="'article-like-count-' + ${article.id}" th:text="${article.like_count}">0</span>
+      </button>
+      <a th:href="@{'/article/' + ${article.id}}">
+        <button>
+          <img th:src="@{/img/comment.png}"  alt="评论" class="icon">
+          <span th:text="${article.comment_count}">0</span>
+        </button>
+      </a>
+      <button>
+        <img th:src="@{/img/browse.png}" alt="浏览" class="icon">
+        <span th:text="${article.view_count}">0</span>
+      </button>
+      <span th:text="'发布于：' + ${article.created_at}">2025-01-01</span>
     </footer>
   </article>
 </div>

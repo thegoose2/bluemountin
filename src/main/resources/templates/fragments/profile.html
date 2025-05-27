@@ -15,49 +15,57 @@
                 <button type="button" id="uploadButton">头像</button>
             </form>
             <button class="create" onclick="window.location.href='/edit'">创作</button>
+            <form th:action="@{/logout}" method="post" class="login-out">
+                <button type="submit">退出登录</button>
+            </form>
         </header>
     </div>
 
     <div class="article-filter">
         <a class="filter-btn"
-           th:href="@{/myblog(temp=1)}"
+           id = "already"
+           onclick="transformcolor('already');loadaready();restorecolor('wait');restorecolor('waiting')"
            th:classappend="${temp == 1} ? ' active'">已发布</a>
 
         <a class="filter-btn"
-           th:href="@{/myblog(temp=2)}"
+           id = "wait"
+           onclick="transformcolor('wait');loadwait();restorecolor('waiting');restorecolor('already')"
            th:classappend="${temp == 2} ? ' active'">审核中</a>
 
         <a class="filter-btn"
            th:if="${TT}"
-           th:href="@{/myblog(temp=0)}"
+           id = "waiting"
+           onclick="transformcolor('waiting');loadwaiting();restorecolor('already');restorecolor('wait')"
            th:classappend="${temp == 0} ? ' active'">待审核</a>
     </div>
 
-    <article class="post" th:each="article : ${articleList}">
-        <header>
-            <div class="user-info">
-                <img th:src="@{${user.img}}" alt="头像">
-                <span th:text="@{${user.username}}">@username</span>
+    <div id="article-main-content" th:fragment="article-main-content">
+        <article class="post" th:each="article : ${articleList}">
+            <header>
+                <div class="user-info">
+                    <img th:src="@{${user.img}}" alt="头像">
+                    <span th:text="@{${user.username}}">@username</span>
+                </div>
+            </header>
+            <div class="post-content">
+                <div class="content-snippet" th:utext="${article.content}">这是一条示例帖子内容……</div>
+                <a th:href="@{'/article/' + ${article.id}}" class="read-more">阅读全文</a>
             </div>
-        </header>
-        <div class="post-content">
-            <div class="content-snippet" th:utext="${article.content}">这是一条示例帖子内容……</div>
-            <a th:href="@{'/article/' + ${article.id}}" class="read-more">阅读全文</a>
-        </div>
-        <footer>
-            <button>
-                <img th:src="@{/img/support.png}" alt="点赞" class="icon">
-                <span th:text="${article.like_count}">0</span>
-            </button>
-            <button>
-                <img th:src="@{/img/comment.png}" alt="评论" class="icon">
-                <span th:text="${article.comment_count}">0</span>
-            </button>
-            <button>
-                <img th:src="@{/img/browse.png}" alt="浏览" class="icon">
-                <span th:text="${article.view_count}">0</span>
-            </button>
-            <span th:text="'发布于：' + ${article.created_at}">2025-01-01</span>
-        </footer>
-    </article>
+            <footer>
+                <button>
+                    <img th:src="@{/img/support.png}" alt="点赞" class="icon">
+                    <span th:text="${article.like_count}">0</span>
+                </button>
+                <button>
+                    <img th:src="@{/img/comment.png}" th:href="@{'/article/' + ${article.id}}" alt="评论" class="icon">
+                    <span th:text="${article.comment_count}">0</span>
+                </button>
+                <button>
+                    <img th:src="@{/img/browse.png}" alt="浏览" class="icon">
+                    <span th:text="${article.view_count}">0</span>
+                </button>
+                <span th:text="'发布于：' + ${article.created_at}">2025-01-01</span>
+            </footer>
+        </article>
+    </div>
 </div>
