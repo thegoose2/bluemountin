@@ -1,14 +1,14 @@
 package com.work.lanshan.controller;
 
 import com.work.lanshan.Components.MarkdownUtils;
-import com.work.lanshan.Entety.Article;
-import com.work.lanshan.Entety.Comment;
-import com.work.lanshan.Entety.Role;
-import com.work.lanshan.Entety.Users;
+import com.work.lanshan.Entety.*;
 import com.work.lanshan.config.ArticleService;
 import com.work.lanshan.config.CommentService;
+import com.work.lanshan.config.favoriteService;
+import com.work.lanshan.config.followService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -34,6 +34,13 @@ public class web {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private followService followService;
+
+    @Autowired
+    private favoriteService favoriteservice;
+
 
     // 首页，显示动态feed内容
     @GetMapping({"/", "/home"})
@@ -250,6 +257,14 @@ public class web {
         return "fragments/feed :: content"; // 只返回中间部分
     }
 
+    @GetMapping("/favorite/fragment")
+    public String favoriteFragment(Model model, @AuthenticationPrincipal Users user) {
+        List<folder> userFolders = favoriteservice.getfolder(user.getId());
+        model.addAttribute("folders", userFolders);
+        model.addAttribute("fragg", "feed");
+        return "fragments/favourite :: content";
+    }
+
     @GetMapping("/article/{id}")
     public String showArticleDetail(@PathVariable int id, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -258,6 +273,10 @@ public class web {
         String html = MarkdownUtils.markdownToHtml(article.getContent());
         article.setContent(html);
         List<Comment> comments = commentService.getCommentsForArticle(id);
+        boolean isfollow = followService.isFollower(currentUser.getId(), article.getAuthor_id());
+        List<folder> userFolders = favoriteservice.getfolder(currentUser.getId());
+        model.addAttribute("favoriteFolders", userFolders);
+        model.addAttribute("isFollowed", isfollow);
         model.addAttribute("comments", comments);
         model.addAttribute("user", currentUser);
         model.addAttribute("article", article);
@@ -275,4 +294,26 @@ public class web {
         response.put("like_count", article.getLike_count());
         return response;
     }
+
+    @PostMapping("/favorite-folder/create")
+    @ResponseBody
+    public Map<String, Object> createFolder(@RequestBody Map<String, String> request,
+                                            @AuthenticationPrincipal Users user) {
+        String folderName = request.get("name");
+        if (folderName == null || folderName.isBlank()) {
+            return Map.of("success", false, "message", "名称不能为空");
+        }
+
+        favoriteservice.insertfolder(folderName,user.getId());
+        return Map.of("success", true);
+    }
+
+    @GetMapping("/favorite/folder/{folderId}")
+    public String loadFolderContent(@PathVariable Integer folderId, Model model,@AuthenticationPrincipal Users user) {
+        List<Article> articles = favoriteservice.getarticle(user.getId(),folderId);
+        model.addAttribute("articleList",articles);
+        model.addAttribute("fragg", "feed");
+        return "fragments/feed :: content"; // 返回局部视图片段
+    }
+
 }

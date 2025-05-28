@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.work.lanshan.Mapper.folderMapper">
+
+    <insert id="insertfolder">
+        insert into favorite_folder(user_id,name,created_at)
+        values (#{user_id},#{name},NOW())
+    </insert>
+    <delete id="deleteFolder">
+        delete from favorite_folder where id = #{id}
+    </delete>
+    <select id="getfolder" resultType="com.work.lanshan.Entety.folder">
+        select
+            *
+        from
+            favorite_folder
+        where favorite_folder.user_id = #{user_id}
+    </select>
+    <select id="getarticle" resultType="com.work.lanshan.Entety.Article">
+        SELECT
+            a.*,
+            u.username AS author_name,
+            u.img AS author_avatar_img
+        FROM
+            article a
+        JOIN
+            article_favorite af ON a.id = af.article_id
+        JOIN
+            users u ON a.author_id = u.id
+        WHERE
+            af.user_id = #{user_id}
+        AND
+            af.folder_id = #{folder_id}
+    </select>
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.work.lanshan.Mapper.favouriteMapper">
+    <insert id="insertFavourite">
+        insert into article_favorite(user_id,article_id,folder_id)
+        values (#{user_id},#{article_id},#{folder_id})
+    </insert>
+    <delete id="deleteFavourite">
+        delete
+        from
+            article_favorite
+        where
+            user_id = #{user_id}
+        and
+            article_id = #{article_id}
+        and
+            folder_id = #{folder_id}
+    </delete>
+</mapper>

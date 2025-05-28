@@ -18,5 +18,8 @@
         <mapper resource="mapper/Usermapper.xml"/>
         <mapper resource="mapper/ArticleMapper.xml"/>
         <mapper resource="mapper/CommentMapper.xml"/>
+        <mapper resource="mapper/user_followMapper.xml"/>
+        <mapper resource="mapper/folderMapper.xml"/>
+        <mapper resource="mapper/favouriteMapper.xml"/>
     </mappers>
 </configuration>

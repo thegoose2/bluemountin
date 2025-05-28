@@ -12,9 +12,72 @@
 
     <!-- 作者信息 -->
     <div class="author-info">
-        作者：<span th:text="${user.username}">匿名</span> |
-        发布时间：<span th:text="${article.created_at}">时间</span>
+        <span>作者：</span>
+        <img th:src="@{${article.author_avatar_img}}" alt="头像" class="author-avatar">
+        <span class="author-name" th:text="@{${article.author_name}}">匿名</span>
+        <span class="article-time">| 发布时间：<span th:text="${article.created_at}">时间</span></span>
+
+        <button class="follow-btn"
+                id = "follow-btn"
+                th:style="${isFollowed} ? 'display:none' : 'display:inline-block'"
+                th:onclick="'followUser(' + ${article.author_id} + ')'">
+            关注
+        </button>
+        <button class="follow-btn followed"
+                id ="unfollow-btn"
+                th:style="${isFollowed} ? 'display:inline-block' : 'display:none'"
+                th:onclick="'unfollowUser(' + ${article.author_id} + ')'">
+            已关注
+        </button>
+
+        <!-- 私信按钮 -->
+        <button onclick="openChat()" class="chat">私信</button>
+
+        <!-- 聊天弹窗：默认隐藏 -->
+        <div id="chat-dialog" class="chat-dialog" style="display: none;">
+            <div class="chat-header">
+                <img src="/img/avatar-opponent.png" alt="头像" class="avatar">
+                <span class="username">对方用户名</span>
+                <span class="close" onclick="closeChat()">&times;</span>
+            </div>
+            <div class="chat-body" id="chat-body">
+                <!-- 消息示例 -->
+                <!-- <div class="message left"><div class="bubble">你好</div></div> -->
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="message-input" placeholder="输入私信内容...">
+                <button onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+
+        <!-- 收藏图标 -->
+        <img th:src="@{/img/collection.png/}"
+             alt="收藏"
+             class="favorite-icon"
+             th:onclick="'openFavoriteModal(' + ${article.id} + ')'">
+
+        <!-- 收藏弹窗 -->
+        <div id="favorite-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeFavoriteModal()">&times;</span>
+                <h3>收藏到收藏夹</h3>
+                <form id="favorite-form">
+                    <input type="hidden" id="favorite-article-id">
+                    <ul>
+                        <li th:each="folder : ${favoriteFolders}">
+                            <label>
+                                <input type="radio" name="folder" th:value="${folder.id}">
+                                <span th:text="${folder.name}"></span>
+                            </label>
+                        </li>
+                    </ul>
+                    <button type="button" onclick="submitFavorite()">确认收藏</button>
+                </form>
+            </div>
+        </div>
+
     </div>
+
 
     <!-- 文章内容 -->
     <div class="article-content" th:utext="${article.content}">

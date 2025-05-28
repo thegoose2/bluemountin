@@ -41,3 +41,94 @@ function likeComment(commentId) {
             console.error('发生错误:', error);
         });
 }
+
+function followUser(followee_id) {
+    fetch(`/follow/${followee_id}`, {
+        method: "POST"
+    })
+        .then(response => {
+            if (response.ok) {
+                // 成功后更新按钮 UI
+                document.getElementById("follow-btn").style.display = "none";
+                document.getElementById("unfollow-btn").style.display = "inline-block";
+            }
+        });
+}
+
+function unfollowUser(followee_id) {
+    fetch(`/follow/${followee_id}`, {
+        method: "DELETE"
+    })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById("follow-btn").style.display = "inline-block";
+                document.getElementById("unfollow-btn").style.display = "none";
+            }
+        });
+}
+
+//选择收藏夹界面
+function openFavoriteModal(articleId) {
+    document.getElementById('favorite-modal').style.display = 'block';
+    document.getElementById('favorite-article-id').value = articleId;
+}
+
+function closeFavoriteModal() {
+    document.getElementById('favorite-modal').style.display = 'none';
+}
+
+function submitFavorite() {
+    const articleId = document.getElementById('favorite-article-id').value;
+    const folderId = document.querySelector('input[name="folder"]:checked')?.value;
+
+    if (!folderId) {
+        alert("请选择一个收藏夹！");
+        return;
+    }
+
+    fetch(`/favorite/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            articleId: articleId,
+            folderId: folderId
+        })
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("收藏成功！");
+                closeFavoriteModal();
+            } else {
+                alert("收藏失败！");
+            }
+        });
+}
+//选择收藏夹界面
+
+//私信
+function openChat() {
+    document.getElementById("chat-dialog").style.display = "flex";
+}
+
+function closeChat() {
+    document.getElementById("chat-dialog").style.display = "none";
+}
+
+function sendMessage() {
+    const input = document.getElementById("message-input");
+    const message = input.value.trim();
+    if (message) {
+        const chatBody = document.getElementById("chat-body");
+
+        // 生成我方消息气泡
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "message right";
+        msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
+        chatBody.appendChild(msgDiv);
+
+        input.value = "";
+        chatBody.scrollTop = chatBody.scrollHeight; // 滚动到底部
+    }
+}
+
+//私信

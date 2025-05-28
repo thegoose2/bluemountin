@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<div class="Favorite" th:fragment="content">
+    <div class="favorite-container">
+        <!-- 左侧固定收藏夹列表 -->
+        <div class="sidebar">
+            <h3 onclick="openCreateModal()">创建收藏夹</h3>
+            <ul>
+                <li th:each="folder : ${folders}"
+                    th:text="${folder.name}"
+                    th:onclick="'loadFolder(' + ${folder.id} + ')'"
+                    class="folder-item">
+                </li>
+            </ul>
+        </div>
+
+        <!-- 右侧滚动内容区 -->
+        <div class="content-area" id="content-area">
+            <div th:with="frag=${fragg}" th:replace="~{fragments/__${fragg}__ :: content}"></div>
+        </div>
+    </div>
+
+    <!-- 创建收藏夹弹窗 -->
+    <div id="create-folder-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCreateModal()">&times;</span>
+            <h3>新建收藏夹</h3>
+            <input type="text" id="new-folder-name" placeholder="收藏夹名称">
+            <button onclick="submitCreateFolder()">确认</button>
+        </div>
+    </div>
+</div>

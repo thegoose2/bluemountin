@@ -36,6 +36,14 @@ function loadfeed() {
         });
 }
 
+function loadfavorite() {
+    fetch('/favorite/fragment') // 请求片段
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('main-content').innerHTML = html;
+        });
+}
+
 function loadaready() {
     fetch('/myblog?temp=1') // 请求片段
         .then(response => response.text())
@@ -123,3 +131,55 @@ function likearticle(articleId) {
         });
 }
 
+//收藏夹
+function openCreateModal() {
+    document.getElementById('create-folder-modal').style.display = 'block';
+}
+
+function closeCreateModal() {
+    document.getElementById('create-folder-modal').style.display = 'none';
+}
+
+function submitCreateFolder() {
+    const folderName = document.getElementById('new-folder-name').value.trim();
+    if (!folderName) {
+        alert("请输入收藏夹名称");
+        return;
+    }
+
+    fetch('/favorite-folder/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: folderName })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeCreateModal();
+                location.reload(); // 或者你用 JS 动态添加到 ul 中也可以
+            } else {
+                alert("创建失败：" + data.message);
+            }
+        });
+}
+
+function loadFolder(folderId) {
+    // 发请求获取收藏夹下的文章
+    fetch(`/favorite/folder/${folderId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("加载收藏夹失败");
+            }
+            return response.text(); // 假设返回的是 HTML 片段
+        })
+        .then(html => {
+            // 将右侧内容区域替换为新内容
+            document.getElementById("content-area").innerHTML = html;
+        })
+        .catch(error => {
+            console.error("出错啦:", error);
+        });
+}
+//收藏夹
