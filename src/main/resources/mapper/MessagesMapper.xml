@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.work.lanshan.Mapper.MessagesMapper">
+    <insert id="sendMessage">
+        insert into private_message(sender_id,receiver_id,content,is_read)
+        values (#{sender_id}, #{receiver_id}, #{content} ,false)
+    </insert>
+    <update id="setread">
+        update private_message
+        set is_read = true
+    </update>
+    <select id="getMessage" resultType="com.work.lanshan.Entety.Messages">
+        SELECT
+            m.*,
+            u.img AS sender_avatar
+        FROM
+            private_message m
+        JOIN
+            users u ON m.sender_id = u.id
+        WHERE
+            (m.sender_id = #{sender_id} AND m.receiver_id = #{receiver_id})
+        OR
+            (m.sender_id = #{receiver_id} AND m.receiver_id = #{sender_id})
+        ORDER BY m.timestamp;
+    </select>
+</mapper>

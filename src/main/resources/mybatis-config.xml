@@ -21,5 +21,6 @@
         <mapper resource="mapper/user_followMapper.xml"/>
         <mapper resource="mapper/folderMapper.xml"/>
         <mapper resource="mapper/favouriteMapper.xml"/>
+        <mapper resource="mapper/MessagesMapper.xml"/>
     </mappers>
 </configuration>

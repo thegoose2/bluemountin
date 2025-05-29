@@ -31,22 +31,23 @@
         </button>
 
         <!-- 私信按钮 -->
-        <button onclick="openChat()" class="chat">私信</button>
+        <button th:onclick="'openChat(' + ${article.author_id} + ')'" class="chat">私信</button>
 
         <!-- 聊天弹窗：默认隐藏 -->
         <div id="chat-dialog" class="chat-dialog" style="display: none;">
             <div class="chat-header">
-                <img src="/img/avatar-opponent.png" alt="头像" class="avatar">
-                <span class="username">对方用户名</span>
+                <img th:src="@{${article.author_avatar_img}}" alt="头像" class="avatar">
+                <span th:text="@{${article.author_name}}" class="username">对方用户名</span>
                 <span class="close" onclick="closeChat()">&times;</span>
             </div>
             <div class="chat-body" id="chat-body">
-                <!-- 消息示例 -->
-                <!-- <div class="message left"><div class="bubble">你好</div></div> -->
+                <div id="message-main-content">
+                    <div th:with="frag=${frag}" th:replace="~{fragments/__${frag}__ :: content}"></div>
+                </div>
             </div>
             <div class="chat-footer">
                 <input type="text" id="message-input" placeholder="输入私信内容...">
-                <button onclick="sendMessage()">发送</button>
+                <button th:onclick="'sendMessage('+${article.author_id}+')'">发送</button>
             </div>
         </div>
 

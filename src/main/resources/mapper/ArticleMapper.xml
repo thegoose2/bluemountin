@@ -23,7 +23,15 @@
         DELETE FROM article WHERE id=#{id}
     </delete>
     <select id="selectByAuthorIdandstatus" resultType="com.work.lanshan.Entety.Article">
-       SELECT * FROM article WHERE author_id = #{id} and status = #{status}
+        select
+            a.*,
+            u.username AS author_name,         -- 映射到 Article.author_name
+            u.img AS author_avatar_img
+        from
+            article a
+        JOIN
+            users u ON a.author_id = u.id
+        WHERE author_id = #{id} and status = #{status}
     </select>
     <select id="selectPublished" resultType="com.work.lanshan.Entety.Article">
         SELECT * FROM article WHERE status != 3 ORDER BY published_at DESC LIMIT #{offset}, #{limit}
@@ -52,6 +60,17 @@
             a.status = #{status};
 
     </select>
+    <select id="search" resultType="com.work.lanshan.Entety.Article">
+        SELECT
+            a.*,
+            u.username AS author_name,         -- 映射到 Article.author_name
+            u.img AS author_avatar_img
+        FROM
+            article a
+        JOIN
+             users u ON a.author_id = u.id
+        WHERE status = 1 AND content LIKE CONCAT('%', #{keyword}, '%')
+    </select>
 
     <update id="updatacommentcount">
         UPDATE article
@@ -61,6 +80,17 @@
             WHERE comment.article_id = article.id
         )
         WHERE id = #{article_id};
+    </update>
+    <update id="setview">
+        UPDATE article set view_count = view_count + 1 where id = #{id}
+    </update>
+    <update id="setstatus">
+        update article
+        set status = 1 where id = #{article_id}
+    </update>
+    <update id="setsatusnot">
+        update article
+        set status = 2 where id = #{article_id}
     </update>
 
 </mapper>

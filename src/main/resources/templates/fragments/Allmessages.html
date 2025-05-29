@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<div class="Favorite" th:fragment="content">
+  <div class="favorite-container">
+    <!-- 左侧固定收藏夹列表 -->
+    <div class="sidebar">
+      <div class="user-info-message" th:each="user : ${userList}">
+        <button th:onclick="'openChat('+${user.id}+')'">
+          <img th:src="@{${user.img}}" alt="头像">
+          <span th:text="${user.username}">@username</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="content-area" id="content-area">
+      <div th:with="frag=${fragg}" th:replace="~{fragments/__${fragg}__ :: content}"></div>
+    </div>
+  </div>
+
+</div>

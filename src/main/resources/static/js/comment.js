@@ -106,29 +106,77 @@ function submitFavorite() {
 //选择收藏夹界面
 
 //私信
-function openChat() {
+function openChat(receiver_id) {
     document.getElementById("chat-dialog").style.display = "flex";
+    fetch(`/messages/${receiver_id}`) // 请求片段
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('message-main-content').innerHTML = html;
+        });
 }
 
 function closeChat() {
     document.getElementById("chat-dialog").style.display = "none";
 }
 
-function sendMessage() {
+function sendMessage(receiverId) {
     const input = document.getElementById("message-input");
-    const message = input.value.trim();
-    if (message) {
-        const chatBody = document.getElementById("chat-body");
+    const content = input.value.trim();
+    if (!content) return;
 
-        // 生成我方消息气泡
-        const msgDiv = document.createElement("div");
-        msgDiv.className = "message right";
-        msgDiv.innerHTML = `<div class="bubble">${message}</div>`;
-        chatBody.appendChild(msgDiv);
-
-        input.value = "";
-        chatBody.scrollTop = chatBody.scrollHeight; // 滚动到底部
-    }
+    fetch('/messages/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({receiverId, content})
+    }).then(res => {
+        if (res.ok) {
+            input.value = ""; // 清空输入框
+            loadMessages(receiverId); // ✅ 重新加载整个对话框消息
+        } else {
+            alert("发送失败");
+        }
+    }).catch(err => {
+        console.error("发送消息失败", err);
+    });
 }
 
+function loadMessages(receiverId) {
+    fetch(`/messages/${receiverId}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('message-main-content').innerHTML = html;
+            // 自动滚动到底部
+            const chatBody = document.getElementById("message-main-content");
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(error => {
+            console.error("加载消息失败", error);
+        });
+}
+
+const chatDialog = document.getElementById('chat-dialog');
+const chatHeader = chatDialog.querySelector('.chat-header');
+
+let isDragging = false;
+let offsetX = 0;
+let offsetY = 0;
+
+chatHeader.addEventListener('mousedown', function (e) {
+    isDragging = true;
+    offsetX = e.clientX - chatDialog.offsetLeft;
+    offsetY = e.clientY - chatDialog.offsetTop;
+    document.body.style.userSelect = 'none'; // 防止拖动中选中文本
+});
+
+document.addEventListener('mousemove', function (e) {
+    if (isDragging) {
+        chatDialog.style.left = (e.clientX - offsetX) + 'px';
+        chatDialog.style.top = (e.clientY - offsetY) + 'px';
+    }
+});
+
+document.addEventListener('mouseup', function () {
+    isDragging = false;
+    document.body.style.userSelect = '';
+});
 //私信

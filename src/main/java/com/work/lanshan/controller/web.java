@@ -2,10 +2,7 @@ package com.work.lanshan.controller;
 
 import com.work.lanshan.Components.MarkdownUtils;
 import com.work.lanshan.Entety.*;
-import com.work.lanshan.config.ArticleService;
-import com.work.lanshan.config.CommentService;
-import com.work.lanshan.config.favoriteService;
-import com.work.lanshan.config.followService;
+import com.work.lanshan.config.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,6 +37,9 @@ public class web {
 
     @Autowired
     private favoriteService favoriteservice;
+
+    @Autowired
+    private Messageservice messageservice;
 
 
     // 首页，显示动态feed内容
@@ -214,6 +214,36 @@ public class web {
         model.addAttribute("frag", "profile");
         model.addAttribute("user", user);
         model.addAttribute("TT", T);
+        System.out.println(articleList);
+        return "fragments/profile :: article-main-content";
+    }
+
+    @GetMapping("/myblogs")
+    public String blogs(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Users currentUser = (Users) authentication.getPrincipal();
+        int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
+
+        boolean T=false;
+        List<Role> roles = usermapper.getUserRolesByUid(userid);
+        for (Role role : roles) {
+            if (role.getName().equals("ROLE_ADMIN")) {
+                T = true;
+                break;
+            }
+        }
+        List<Article> articleList = articleService.selectAll(0);
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html); // 替换内容
+            articleService.updatalike(aRticle.getId());
+        }
+
+        Users user = usermapper.findbyusername(currentUser.getUsername());
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("frag", "profile");
+        model.addAttribute("user", user);
+        model.addAttribute("TT", T);
         return "fragments/profile :: article-main-content";
     }
 
@@ -265,6 +295,16 @@ public class web {
         return "fragments/favourite :: content";
     }
 
+    @GetMapping("/allmessages/fragment")
+    public String messageFragment(Model model, @AuthenticationPrincipal Users user) {
+        List<Users> usersList = messageservice.getallUser();
+        model.addAttribute("userList", usersList);
+        model.addAttribute("fragg", "Allmessage-message");
+        model.addAttribute("frag", "messages");
+        model.addAttribute("usertemp",null);
+        return "fragments/Allmessages :: content";
+    }
+
     @GetMapping("/article/{id}")
     public String showArticleDetail(@PathVariable int id, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -272,6 +312,7 @@ public class web {
         Article article = articleService.findarticle(id); // 获取文章及评论
         String html = MarkdownUtils.markdownToHtml(article.getContent());
         article.setContent(html);
+        articleService.setview(id);
         List<Comment> comments = commentService.getCommentsForArticle(id);
         boolean isfollow = followService.isFollower(currentUser.getId(), article.getAuthor_id());
         List<folder> userFolders = favoriteservice.getfolder(currentUser.getId());
@@ -280,6 +321,7 @@ public class web {
         model.addAttribute("comments", comments);
         model.addAttribute("user", currentUser);
         model.addAttribute("article", article);
+        model.addAttribute("frag", "messages");
         return "article-detail"; // 对应 templates/article-detail.html
     }
 
@@ -314,6 +356,35 @@ public class web {
         model.addAttribute("articleList",articles);
         model.addAttribute("fragg", "feed");
         return "fragments/feed :: content"; // 返回局部视图片段
+    }
+
+    //文章搜索
+    @GetMapping("/search/content")
+    public String searchByContent(@RequestParam("keyword") String keyword, Model model) {
+        List<Article> articles = articleService.search(keyword);
+        for (Article aRticle : articles) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html); // 替换内容
+        }
+        model.addAttribute("articleList", articles);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("frag", "feed");
+        return "home";
+    }
+
+    //审核
+    @PostMapping("/accept/{articleId}")
+    @ResponseBody
+    public String acceptArticle(@PathVariable int articleId) {
+        articleService.yes(articleId); // 假设“approved”是通过状态
+        return "success";
+    }
+
+    @PostMapping("/refuse/{articleId}")
+    @ResponseBody
+    public String refuseArticle(@PathVariable int articleId) {
+        articleService.no(articleId); // 假设“approved”是通过状态
+        return "success";
     }
 
 }

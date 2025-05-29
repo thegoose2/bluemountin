@@ -32,7 +32,13 @@ function loadfeed() {
     fetch('/gate/fragment') // 请求片段
         .then(response => response.text())
         .then(html => {
-            document.getElementById('main-content').innerHTML = html;
+            if (html.includes('<form') && html.includes('name="username"')) {
+                // 登录页特征，跳转
+                window.location.href = '/login';
+            } else {
+                // 正常加载片段
+                document.getElementById('main-content').innerHTML = html;
+            }
         });
 }
 
@@ -40,7 +46,27 @@ function loadfavorite() {
     fetch('/favorite/fragment') // 请求片段
         .then(response => response.text())
         .then(html => {
-            document.getElementById('main-content').innerHTML = html;
+            if (html.includes('<form') && html.includes('name="username"')) {
+                // 登录页特征，跳转
+                window.location.href = '/login';
+            } else {
+                // 正常加载片段
+                document.getElementById('main-content').innerHTML = html;
+            }
+        });
+}
+
+function loadAllMessages() {
+    fetch('/allmessages/fragment') // 请求片段
+        .then(response => response.text())
+        .then(html => {
+            if (html.includes('<form') && html.includes('name="username"')) {
+                // 登录页特征，跳转
+                window.location.href = '/login';
+            } else {
+                // 正常加载片段
+                document.getElementById('main-content').innerHTML = html;
+            }
         });
 }
 
@@ -61,6 +87,14 @@ function loadwait() {
 }
 
 function loadwaiting() {
+    fetch('/myblogs?temp=0') // 请求片段
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('article-main-content').innerHTML = html;
+        });
+}
+
+function loadno() {
     fetch('/myblog?temp=2') // 请求片段
         .then(response => response.text())
         .then(html => {
@@ -97,6 +131,7 @@ function transformcolor(id) {
 }
 
 function restorecolor(id) {
+    const iconElement = document.getElementById(id);
     if (originalBackgrounds[id]) {
         iconElement.style.backgroundColor = originalBackgrounds[id];
     }
@@ -183,3 +218,115 @@ function loadFolder(folderId) {
         });
 }
 //收藏夹
+//私信
+function openChat(receiver_id) {
+    fetch(`/message/${receiver_id}`) // 请求片段
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('message-main-content').innerHTML = html;
+        });
+}
+
+function sendMessage(receiverId) {
+    const input = document.getElementById("message-input");
+    const content = input.value.trim();
+    if (!content) return;
+
+    fetch('/messages/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({receiverId, content})
+    }).then(res => {
+        if (res.ok) {
+            input.value = ""; // 清空输入框
+            loadMessages(receiverId); // ✅ 重新加载整个对话框消息
+        } else {
+            alert("发送失败");
+        }
+    }).catch(err => {
+        console.error("发送消息失败", err);
+    });
+}
+
+function loadMessages(receiverId) {
+    fetch(`/message/${receiverId}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('message-main-content').innerHTML = html;
+            // 自动滚动到底部
+            const chatBody = document.getElementById("message-main-content");
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(error => {
+            console.error("加载消息失败", error);
+        });
+}
+//私信
+
+//删除文章
+function deleteArticle(articleId) {
+    if (!confirm("确定要删除这篇文章吗？")) return;
+
+    fetch(`/articles/${articleId}`, {
+        method: 'POST' // 或 'DELETE'，取决于后端
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("删除成功！");
+                location.reload(); // 刷新当前页面
+            } else {
+                alert("删除失败！");
+            }
+        })
+        .catch(error => {
+            console.error("请求出错：", error);
+            alert("请求失败，请稍后重试。");
+        });
+}
+//删除文章
+
+//审核
+function accept(article_id) {
+    fetch(`/accept/${article_id}`, {
+        method: 'POST' // 如果你用的是 POST 接口
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('审核失败');
+            }
+            return response.text();
+        })
+        .then(data => {
+            if (data === 'success') {
+                alert('审核通过');
+                location.reload(); // 刷新当前页面
+            }
+        })
+        .catch(error => {
+            console.error('错误:', error);
+            alert('审核失败，请稍后重试');
+        });
+}
+
+function refuse(article_id) {
+    fetch(`/refuse/${article_id}`, {
+        method: 'POST' // 如果你用的是 POST 接口
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('审核失败');
+            }
+            return response.text();
+        })
+        .then(data => {
+            if (data === 'success') {
+                alert('审核成功');
+                location.reload(); // 刷新当前页面
+            }
+        })
+        .catch(error => {
+            console.error('错误:', error);
+            alert('审核失败，请稍后重试');
+        });
+}
+//审核

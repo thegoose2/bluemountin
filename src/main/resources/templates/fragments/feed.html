@@ -2,10 +2,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <div class="feed" th:fragment="content">
+  <h2 th:if="${keyword} != null and ${keyword.length() > 0}">
+    搜索结果：[[${keyword}]]
+  </h2>
   <article class="post" th:each="article : ${articleList}">
     <header>
       <div class="user-info">
-        <img th:src="@{${article.author_avatar_img}}" alt="头像">
+        <img th:src="@{${article.author_avatar_img}}" alt="头像" class="icon-avatar">
         <span th:text="@{${article.author_name}}">@author_name</span>
       </div>
     </header>

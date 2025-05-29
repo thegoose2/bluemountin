@@ -17,6 +17,12 @@
     <select id="getUserRolesByUid" resultType="com.work.lanshan.Entety.Role">
         select * from roles,user_roles where roles.id=user_roles.role_id and user_roles.user_id = #{id}
     </select>
+    <select id="getallusers" resultType="com.work.lanshan.Entety.Users">
+        SELECT * FROM users
+    </select>
+    <select id="findbyid" resultType="com.work.lanshan.Entety.Users">
+        select * from users where id =#{id}
+    </select>
 
     <insert id="setuserrole">
         insert into user_roles(user_id, role_id)

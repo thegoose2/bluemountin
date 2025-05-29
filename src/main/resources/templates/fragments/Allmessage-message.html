@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<div id="chat-dialog"  th:fragment="content" class="chat-dialog">
+    <div class="chat-header">
+    </div>
+    <div class="chat-body" id="chat-body">
+      <div id="message-main-content">
+        <div th:with="frag=${frag}" th:replace="~{fragments/__${frag}__ :: content}"></div>
+      </div>
+    </div>
+</div>

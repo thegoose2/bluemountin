@@ -2,6 +2,7 @@ package com.work.lanshan.config;
 
 import com.work.lanshan.Entety.Article;
 import com.work.lanshan.Mapper.ArticleMapper;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class ArticleService {
         return articleMapper.softDelete(id);
     }
 
-    public int deleteArticle(Long id) {
+    public int deleteArticle(int id) {
         return articleMapper.delete(id);
     }
 
@@ -54,6 +55,22 @@ public class ArticleService {
 
     public int updatalike(int article_id){
         return articleMapper.updatacommentcount(article_id);
+    }
+
+    public void setview(int article_id) {
+        articleMapper.setview(article_id);
+    }
+
+    public List<Article> search(@Param("keyword") String keyword) {
+        return articleMapper.search(keyword);
+    }
+
+    public void yes(int article_id) {
+        articleMapper.setstatus(article_id);
+    }
+
+    public void no(int article_id) {
+        articleMapper.setsatusnot(article_id);
     }
 
 

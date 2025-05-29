@@ -8,6 +8,8 @@
     <h1>polock</h1>
   </div>
   <div class="search-bar">
-    <input type="text" placeholder="搜索...">
+    <form th:action="@{/search/content}" method="get">
+      <input type="text" name="keyword" placeholder="请输入关键词搜索文章内容" />
+    </form>
   </div>
 </div>

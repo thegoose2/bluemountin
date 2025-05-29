@@ -18,33 +18,46 @@
             <form th:action="@{/logout}" method="post" class="login-out">
                 <button type="submit">退出登录</button>
             </form>
+
         </header>
     </div>
 
     <div class="article-filter">
         <a class="filter-btn"
            id = "already"
-           onclick="transformcolor('already');loadaready();restorecolor('wait');restorecolor('waiting')"
+           onclick="transformcolor('already'); loadaready(); if(' + ${TT} + ') { restorecolor('waiting'); } restorecolor('wait');restorecolor('no')"
            th:classappend="${temp == 1} ? ' active'">已发布</a>
 
         <a class="filter-btn"
            id = "wait"
-           onclick="transformcolor('wait');loadwait();restorecolor('waiting');restorecolor('already')"
-           th:classappend="${temp == 2} ? ' active'">审核中</a>
+           onclick="transformcolor('wait'); loadwait(); if(' + ${TT} + ') { restorecolor('waiting'); } restorecolor('already');restorecolor('no')"
+           th:classappend="${temp == 0} ? ' active'">审核中</a>
 
         <a class="filter-btn"
            th:if="${TT}"
            id = "waiting"
-           onclick="transformcolor('waiting');loadwaiting();restorecolor('already');restorecolor('wait')"
+           onclick="transformcolor('waiting');loadwaiting();restorecolor('already');restorecolor('wait');restorecolor('no')"
            th:classappend="${temp == 0} ? ' active'">待审核</a>
+
+        <a class="filter-btn"
+           id = "no"
+           onclick="transformcolor('no');loadno();restorecolor('already');if(' + ${TT} + ') { restorecolor('waiting'); }restorecolor('wait')"
+           th:classappend="${temp == 2} ? ' active'">未通过</a>
     </div>
 
     <div id="article-main-content" th:fragment="article-main-content">
         <article class="post" th:each="article : ${articleList}">
             <header>
                 <div class="user-info">
-                    <img th:src="@{${user.img}}" alt="头像">
-                    <span th:text="@{${user.username}}">@username</span>
+                    <img th:src="@{${article.author_avatar_img}}" alt="头像" class="icon-avatar">
+                    <span th:text="${article.author_name}">author_name</span>
+                    <button th:if="${article.status == 0} and ${TT}" th:onclick="'accept('+${article.id}+')'">通过</button>
+                    <button th:if="${article.status == 0} and ${TT}" th:onclick="'refuse('+${article.id}+')'">拒绝</button>
+                </div>
+                <div >
+                    <form th:onclick="'deleteArticle('+${article.id}+')'">
+                        <img th:src="@{/img/delet.png}" alt="删除" class="deletarticle">
+                    </form>
                 </div>
             </header>
             <div class="post-content">
@@ -52,9 +65,14 @@
                 <a th:href="@{'/article/' + ${article.id}}" class="read-more">阅读全文</a>
             </div>
             <footer>
-                <button>
-                    <img th:src="@{/img/support.png}" alt="点赞" class="icon">
-                    <span th:text="${article.like_count}">0</span>
+                <button th:onclick="'likearticle(\'' + ${article.id} + '\')'">
+                    <img
+                            th:src="@{/img/support.png}"
+                            th:id="'article-like-' + ${article.id}"
+                            th:data-id="${article.id}"
+                            alt="点赞"
+                            class="icon-support">
+                    <span th:id="'article-like-count-' + ${article.id}" th:text="${article.like_count}">0</span>
                 </button>
                 <button>
                     <img th:src="@{/img/comment.png}" th:href="@{'/article/' + ${article.id}}" alt="评论" class="icon">

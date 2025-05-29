@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<div th:fragment="content">
+  <div th:each="msg : ${messages}">
+    <!-- 自己发的消息，头像在右边 -->
+    <div th:if="${msg.sender_id} == ${user.id}" class="message right">
+      <div class="bubble" th:text="${msg.content}"></div>
+      <img class="avatar" th:src="@{${msg.sender_avatar}}" alt="我">
+    </div>
+
+    <!-- 对方发的消息，头像在左边 -->
+    <div th:if="${msg.sender_id} != ${user.id}" class="message left">
+      <img class="avatar" th:src="@{${msg.sender_avatar}}" alt="对方">
+      <div class="bubble" th:text="${msg.content}"></div>
+    </div>
+  </div>
+  <div class="chat-footer" th:each="usertemp : ${Usertemp}">
+    <textarea id="message-input" placeholder="请输入内容..."></textarea>
+    <button th:onclick="'sendMessage(' + ${usertemp.id} + ')'">发送</button>
+  </div>
+</div>

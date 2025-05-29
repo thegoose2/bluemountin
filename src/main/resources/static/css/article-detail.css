@@ -95,7 +95,17 @@ body {
     line-height: 1.8;
     margin-bottom: 60px;
 }
-/* 发表评论区域 */
+
+.article-content img{
+    max-width: 100%;          /* 图片宽度不超过容器宽度 */
+    max-height: 300px;        /* 限制最大高度，防止竖图过长 */
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 10px auto;        /* 可选：让图片居中显示 */
+    object-fit: contain;      /
+}
+    /* 发表评论区域 */
 .add-comment {
     margin-bottom: 30px;
 }
@@ -388,8 +398,8 @@ body {
 聊天框
  */
 .chat-dialog {
-    width: 400px;
-    height: 500px;
+    width: 800px;
+    height: 700px;
     display: flex;
     flex-direction: column;
     border: 1px solid #ccc;
@@ -403,6 +413,7 @@ body {
 }
 
 .chat-header {
+    cursor: move;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -497,4 +508,40 @@ body {
     background-color: #00c4ff;
 }
 /*聊天框
+ */
+.message {
+    display: flex;
+    align-items: flex-end;
+    margin: 10px;
+}
+
+.message.left {
+    justify-content: flex-start;
+}
+
+.message.right {
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 8px;
+}
+
+.bubble {
+    background-color: #e0e0e0;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 300px;
+    word-wrap: break-word;
+}
+.message.right .bubble {
+    background-color: #c2e9fb;
+}
+
+/*
+消息样式
  */

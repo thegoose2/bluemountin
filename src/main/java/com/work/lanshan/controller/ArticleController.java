@@ -5,6 +5,7 @@ import com.work.lanshan.Entety.Comment;
 import com.work.lanshan.Entety.Role;
 import com.work.lanshan.Mapper.Usermapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import com.work.lanshan.Entety.Article;
@@ -46,13 +47,12 @@ public class ArticleController {
     }
 
     @PostMapping("/unsure")
-    public String createArticle0(@RequestParam("content") String content, @RequestParam("title") String title,Article article,Model model) {
+    public String createArticle0(@RequestParam("content") String content, Article article,Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users currentUser = (Users) authentication.getPrincipal();
         int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
         article.setAuthor_id(userid);
         article.setContent(content);
-        article.setTitle(title);
         article.setStatus(0); // 默认草稿
         article.setView_count(0);
         article.setLike_count(0);
@@ -81,14 +81,13 @@ public class ArticleController {
     }
 
     @PostMapping("/sure")
-    public String createArticle1(@RequestParam("content") String content, @RequestParam("title") String title, Article article, Model model) {
+    public String createArticle1(@RequestParam("content") String content, Article article, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Users currentUser = (Users) authentication.getPrincipal();
         int userid = (int) currentUser.getId(); // 🎉 直接获取 userId
         article.setAuthor_id(userid);
         article.setContent(content);
-        article.setTitle(title);
-        article.setStatus(1); // 发布待审和文章
+        article.setStatus(0); // 发布待审和文章
         article.setView_count(0);
         article.setLike_count(0);
         article.setComment_count(0);
@@ -147,6 +146,13 @@ public class ArticleController {
         result.put("url", "/uploads/" + filename);
 
         return result;
+    }
+
+    @PostMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deleteArticle(@PathVariable("id") int id) {
+        articleService.deleteArticle(id); // 自行实现
+        return ResponseEntity.ok("Deleted");
     }
 
 }
