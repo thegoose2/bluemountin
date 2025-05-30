@@ -5,22 +5,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <aside class="left-sidebar" th:fragment="left">
   <h3>导航</h3>
-  <ul>
-    <li><a onclick="loadfeed()">首页</a></li>
-    <li><a href=\"#\">关注的人</a></li>
-    <li><a onclick="loadfavorite()">收藏夹</a></li>
-    <li><a onclick="loadProfile()">个人中心</a></li>
-    <li><a onclick="loadAllMessages()">私信</a></li>
-  </ul>
+  <button onclick="loadfeed()">首页</button>
+  <button onclick="loadfollow()">关注的人</button>
+  <button onclick="loadfavorite()">收藏夹</button>
+  <button onclick="loadProfile()">个人中心</button>
+  <button onclick="loadAllMessages()">私信</button>
 </aside>
 
 <!-- 右边栏 -->
 <aside class="right-sidebar" th:fragment="right">
-  <h3>排序</h3>
-  <ul>
-    <li><a href=\"#\">浏览数量</a></li>
-    <li><a href=\"#\">点赞数量</a></li>
-    <li><a href=\"#\">评论数量</a></li>
-    <li><a href=\"#\">发布时间</a></li>
-  </ul>
+
 </aside>

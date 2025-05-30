@@ -71,6 +71,21 @@
              users u ON a.author_id = u.id
         WHERE status = 1 AND content LIKE CONCAT('%', #{keyword}, '%')
     </select>
+    <select id="selectFollow" resultType="com.work.lanshan.Entety.Article">
+        SELECT
+            a.*,
+            u.username AS author_name,         -- 映射到 Article.author_name
+            u.img AS author_avatar_img
+        FROM
+            article a
+        JOIN
+            user_follow uf ON a.author_id = uf.followee_id
+        JOIN
+            users u ON a.author_id = u.id
+        WHERE uf.follower_id = #{UserId} and a.status = 1
+
+        ORDER BY a.id DESC;
+    </select>
 
     <update id="updatacommentcount">
         UPDATE article

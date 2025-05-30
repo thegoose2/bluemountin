@@ -2,9 +2,10 @@
 <html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title th:text="${article.title}">文章详情</title>
+    <title>文章详情</title>
     <link rel="stylesheet" th:href="@{/css/article-detail.css}" />
     <script th:src="@{/js/comment.js}" defer></script>
+    <link rel="icon" href="/img/Polo-removebg-preview.png" type="image/x-icon">
 </head>
 <body>
 
@@ -31,7 +32,7 @@
         </button>
 
         <!-- 私信按钮 -->
-        <button th:onclick="'openChat(' + ${article.author_id} + ')'" class="chat">私信</button>
+        <button th:onclick="'openChat(' + ${article.author_id} + ')'" class="follow-btn">私信</button>
 
         <!-- 聊天弹窗：默认隐藏 -->
         <div id="chat-dialog" class="chat-dialog" style="display: none;">
@@ -129,7 +130,7 @@
             <hr class="comment-divider">
 
             <!-- 一级评论回复框 -->
-            <form th:id="'replyForm' + ${comment.id}" class="reply-form" action="/comment" method="post" style="display:none">
+            <form th:id="'replyForm' + ${comment.id}" class="comment-form" action="/comment" method="post" style="display:none">
                 <input type="hidden" name="article_id" th:value="${article.id}">
                 <input type="hidden" name="parent_id" th:value="${comment.id}">
                 <textarea name="content" placeholder="回复内容..." required></textarea>
@@ -141,37 +142,37 @@
 
                 <!-- 每条子评论 -->
                 <div class="reply-box" th:each="reply : ${comment.replies}">
-                    <img th:src="@{${reply.user_img}}" alt="头像" class="avatar-small">
+                    <img th:src="@{${reply.user_img}}" alt="头像" class="avatar">
                     <div class="reply-body">
                         <div class="reply-author" th:text="${reply.username}"></div>
 
                         <div class="reply-content-wrapper">
                             <div class="reply-content collapsed" th:id="'replyContent' + ${reply.id}">
-                                <span th:if="${reply.reply_to_username != null}">
+                                <span th:if="${reply.reply_to_username != null}" class="span1">
                                     回复 @<span th:text="${reply.reply_to_username}"></span>：
                                 </span>
                                 <span th:text="${reply.content}"></span>
                             </div>
                         </div>
-
-                        <div class="reply-footer">
-                            <div class="actions">
-                                <!-- 在评论中 -->
+                        <div class="comment-footer">
+                            <!-- 在评论中 -->
+                            <button th:onclick="'likeComment(' + ${reply.id} + ')'">
                                 <img th:src="@{/img/support.png}"
-                                     class="icon"
+                                     class="icon-like"
                                      th:id="'like-' + ${reply.id}"
-                                     th:data-id="${reply.id}"
-                                     th:onclick="'likeComment(' + ${reply.id} + ')'">
+                                     th:data-id="${reply.id}">
                                 <span th:id="'like-count-' + ${reply.id}" th:text="${reply.support_count}">0</span>
+                            </button>
+                            <button>
                                 <img th:src="@{/img/comment.png}" class="icon"
                                      th:onclick="'toggleReplyForm(' + ${reply.id} + ')'">
-                            </div>
-                            <div class="reply-time" th:text="${reply.create_time}"></div>
+                            </button>
+                            <div class="comment-time" th:text="${reply.create_time}"></div>
                         </div>
                     </div>
 
                     <!-- 子评论回复框 -->
-                    <form th:id="'replyForm' + ${reply.id}" class="reply-form" action="/comment" method="post" style="display:none; margin-left: 20px;">
+                    <form th:id="'replyForm' + ${reply.id}" class="comment-form" action="/comment" method="post" style="display:none; margin-left: 20px;">
                         <input type="hidden" name="article_id" th:value="${article.id}">
                         <input type="hidden" name="parent_id" th:value="${comment.id}">
                         <input type="hidden" name="reply_parent_id" th:value="${reply.id}">

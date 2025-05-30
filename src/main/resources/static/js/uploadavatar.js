@@ -42,6 +42,20 @@ function loadfeed() {
         });
 }
 
+function loadfollow() {
+    fetch('/follow/fragment') // 请求片段
+        .then(response => response.text())
+        .then(html => {
+            if (html.includes('<form') && html.includes('name="username"')) {
+                // 登录页特征，跳转
+                window.location.href = '/login';
+            } else {
+                // 正常加载片段
+                document.getElementById('main-content').innerHTML = html;
+            }
+        });
+}
+
 function loadfavorite() {
     fetch('/favorite/fragment') // 请求片段
         .then(response => response.text())

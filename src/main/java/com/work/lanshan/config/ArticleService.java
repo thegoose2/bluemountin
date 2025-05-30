@@ -73,6 +73,10 @@ public class ArticleService {
         articleMapper.setsatusnot(article_id);
     }
 
+    public List<Article> selectFollow(int id) {
+        return articleMapper.selectFollow(id);
+    }
+
 
 }
 

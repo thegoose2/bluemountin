@@ -22,4 +22,5 @@ public interface ArticleMapper {
     List<Article> search(@Param("keyword") String keyword);
     void setstatus(int article_id);
     void setsatusnot(int article_id);
+    List<Article> selectFollow(int userId);
 }

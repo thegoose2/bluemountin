@@ -287,6 +287,19 @@ public class web {
         return "fragments/feed :: content"; // 只返回中间部分
     }
 
+    @GetMapping("/follow/fragment")
+    public String followFragment(Model model,@AuthenticationPrincipal Users user) {
+        List<Article> articleList = articleService.selectFollow(user.getId());
+        for (Article aRticle : articleList) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html);
+            articleService.updatalike(aRticle.getId());
+        }
+        model.addAttribute("articleList", articleList);
+        model.addAttribute("frag", "feed");
+        return "fragments/feed :: content"; // 只返回中间部分
+    }
+
     @GetMapping("/favorite/fragment")
     public String favoriteFragment(Model model, @AuthenticationPrincipal Users user) {
         List<folder> userFolders = favoriteservice.getfolder(user.getId());
@@ -353,6 +366,10 @@ public class web {
     @GetMapping("/favorite/folder/{folderId}")
     public String loadFolderContent(@PathVariable Integer folderId, Model model,@AuthenticationPrincipal Users user) {
         List<Article> articles = favoriteservice.getarticle(user.getId(),folderId);
+        for (Article aRticle : articles) {
+            String html = MarkdownUtils.markdownToHtml(aRticle.getContent());
+            aRticle.setContent(html); // 替换内容
+        }
         model.addAttribute("articleList",articles);
         model.addAttribute("fragg", "feed");
         return "fragments/feed :: content"; // 返回局部视图片段

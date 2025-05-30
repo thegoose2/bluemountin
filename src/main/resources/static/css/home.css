@@ -59,6 +59,7 @@
 }
 
 .search-bar input {
+    background: rgba(255, 255, 255, 0.6);
     padding: 5px 5px 5px 40px; /* 为图标留出左侧空间 */
     width: 600px;
     height: 50px;
@@ -83,7 +84,7 @@
 main {
     padding: 20px;
     margin: 0 auto; /* 水平居中 */
-    background-color: #29bacd;
+    background-color: rgba(166, 233, 241, 0.8);
     background-size: cover;
 }
 
@@ -94,14 +95,48 @@ main {
     /* 移除固定高度，页面高度由内容决定 */
 }
 
-.left-sidebar, .right-sidebar {
-    background-color: #ffffff; /* 浅灰背景区分栏 */
+.left-sidebar{
+    background-color: rgba(166, 233, 241, 0.8);
     border: none; /* 边框区分栏 */
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 10px;
+    padding: 20px;
     position: sticky; /* 粘性定位 */
     top: calc(50vh - 150px); /* 垂直居中，调整以适配内容高度 */
     align-self: start; /* 确保从顶部开始 */
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* 垂直方向居中整个内容 */
+    text-align: center;
+}
+
+.left-sidebar button{
+    width: 80%;
+    height: 40px;
+    background-color: #f3c381;
+    border-radius: 20px;
+    color: black;
+    transition: 0.5s ease;
+    cursor: pointer;
+    margin: 10px auto;
+    outline: none;
+}
+
+.left-sidebar button:hover{
+    background-color: #ec60a5;
+}
+
+.right-sidebar{
+    background-image: url("../img/right.png");/* 浅灰背景区分栏 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none; /* 边框区分栏 */
+    border-radius: 5px;
+    position: sticky; /* 粘性定位 */
+    top: calc(50vh - 200px); /* 垂直居中，调整以适配内容高度 */
+    align-self: start; /* 确保从顶部开始 */
+    height: 400px;
 }
 
 .feed {
@@ -110,31 +145,6 @@ main {
     border-radius: 5px;
     padding: 10px;
     /* 无粘性定位，随页面滚动 */
-}
-
-.left-sidebar h3, .right-sidebar h3 {
-    margin-bottom: 10px;
-    text-align: center;
-
-}
-
-.left-sidebar ul, .right-sidebar ul {
-    list-style: none;
-    text-align: center;
-}
-
-.left-sidebar ul li, .right-sidebar ul li {
-    margin-bottom: 5px;
-    text-align: center;
-}
-
-.left-sidebar ul li a, .right-sidebar ul li a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.left-sidebar ul li a:hover, .right-sidebar ul li a:hover {
-    text-decoration: underline;
 }
 
 .post {
@@ -444,24 +454,64 @@ footer {
 }
 
 /* 弹窗样式 */
+/* 默认隐藏 */
 .modal {
-    display: none; /* 默认隐藏 */
     position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    top: 40%;
+    left: 40%;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    display: none; /* ✅ 只用一次：默认隐藏，JS 设置 display:flex 来显示 */
 }
+
+/* 弹窗内容居中样式 */
 .modal-content {
     background-color: #fff;
-    margin: 10% auto;
-    padding: 20px;
-    width: 300px;
-    border-radius: 8px;
+    padding: 30px 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    position: relative;
 }
+
+.modal-content h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.modal-content .close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 24px;
+    color: #6b7280;
+    cursor: pointer;
+}
+
 .close {
     float: right;
     font-size: 20px;
