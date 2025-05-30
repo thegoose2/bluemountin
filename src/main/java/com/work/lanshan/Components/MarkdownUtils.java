@@ -13,5 +13,4 @@ public class MarkdownUtils {
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         return renderer.render(document);
     }
-
 }
