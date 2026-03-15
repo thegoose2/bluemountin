@@ -18,6 +18,10 @@ public class MyPersistentTokenRepository implements PersistentTokenRepository {
     //令牌过期时间
     private final static long TOKEM_VALID_DAYS = 14;
 
+    /**
+     * 创建新的记住我令牌
+     * @param token 包含用户认证信息的持久化令牌
+     */
     @Override
     public void createNewToken(PersistentRememberMeToken token) {
         String key = token.getUsername();
@@ -35,6 +39,12 @@ public class MyPersistentTokenRepository implements PersistentTokenRepository {
         redisTemplate.expire(key,TOKEM_VALID_DAYS,TimeUnit.DAYS);
     }
 
+    /**
+     * 更新现有令牌的token值和日期
+     * @param series 令牌系列ID
+     * @param tokenValue 新的令牌值
+     * @param data 新的过期日期
+     */
     @Override
     public void updateToken(String series, String tokenValue, Date data) {
         if(redisTemplate.hasKey(series)){
@@ -44,6 +54,11 @@ public class MyPersistentTokenRepository implements PersistentTokenRepository {
     }
 
 
+    /**
+     * 通过series获取Token
+     * @param series 令牌系列ID
+     * @return 持久化令牌对象，如果不存在则返回null
+     */
     //获取Token通过series
     @Override
     public PersistentRememberMeToken getTokenForSeries(String series) {
@@ -69,6 +84,10 @@ public class MyPersistentTokenRepository implements PersistentTokenRepository {
         return new PersistentRememberMeToken(username, series, tokenValue, time);
     }
 
+    /**
+     * 移除用户的所有记住我令牌（用于登出）
+     * @param username 用户名
+     */
     //移除对应的Token
     @Override
     public void removeUserTokens(String username) {

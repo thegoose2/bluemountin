@@ -23,6 +23,11 @@ public class CommentController {
     @Autowired
     private CommentMapper commentMapper;
 
+    /**
+     * 发表评论或回复
+     * @param comment 评论对象
+     * @return 重定向到文章详情页
+     */
     @PostMapping("/comment")
     public String postComment(@ModelAttribute Comment comment) {
         // 如果这条评论是对别人的回复（parentId 不为空）
@@ -48,6 +53,11 @@ public class CommentController {
         return "redirect:/article/" + comment.getArticle_id();
     }
 
+    /**
+     * 点赞评论
+     * @param id 评论ID
+     * @return 点赞结果（包含新的点赞数）
+     */
     //点赞机制
     @PostMapping("/like")
     @ResponseBody

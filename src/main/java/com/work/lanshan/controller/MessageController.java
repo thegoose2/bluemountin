@@ -25,6 +25,13 @@ public class MessageController {
     @Autowired
     Usermapper usermapper;
 
+    /**
+     * 获取与指定用户的私信列表（片段）
+     * @param receiverId 接收者ID
+     * @param user 当前用户
+     * @param model 模型
+     * @return 消息片段
+     */
     @GetMapping("/messages/{receiver_id}")
     public String messages(@PathVariable("receiver_id") int receiverId, @AuthenticationPrincipal Users user, Model model) {
         List<Messages> messagesList = messageservice.getMessage(receiverId, user.getId());
@@ -33,6 +40,13 @@ public class MessageController {
         return "fragments/messages :: content";
     }
 
+    /**
+     * 获取私信对话详情
+     * @param receiverId 接收者ID
+     * @param user 当前用户
+     * @param model 模型
+     * @return 消息片段
+     */
     @GetMapping("/message/{receiver_id}")
     public String message(@PathVariable("receiver_id") int receiverId, @AuthenticationPrincipal Users user, Model model) {
         List<Messages> messagesList = messageservice.getMessage(receiverId, user.getId());
@@ -43,6 +57,12 @@ public class MessageController {
         return "fragments/messages :: content";
     }
 
+    /**
+     * 发送私信
+     * @param requestMap 请求参数（包含receiverId和content）
+     * @param currentUser 当前用户
+     * @return 发送结果
+     */
     @PostMapping("/messages/send")
     @ResponseBody
     public ResponseEntity<?> sendMessage(@RequestBody Map<String, Object> requestMap,

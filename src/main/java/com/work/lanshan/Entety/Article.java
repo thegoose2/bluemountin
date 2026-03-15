@@ -4,6 +4,10 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 文章实体类
+ * 对应数据库中的文章表
+ */
 @Data
 public class Article {
     private int id;

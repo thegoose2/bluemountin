@@ -14,6 +14,10 @@ public class FollowController {
     @Autowired
     private followService followservice;
 
+    /**
+     * 关注用户
+     * @param followee_id 被关注者ID
+     */
     @PostMapping("/{followee_id}")
     public void Followservice(@PathVariable("followee_id") int followee_id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -22,6 +26,10 @@ public class FollowController {
         followservice.insertfollow(userid, followee_id);
     }
 
+    /**
+     * 取消关注
+     * @param followee_id 被取消关注者ID
+     */
     @DeleteMapping("/{followee_id}")
     public void unFollowservice(@PathVariable("followee_id") int followee_id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

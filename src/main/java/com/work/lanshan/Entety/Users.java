@@ -12,6 +12,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 用户实体类
+ * 实现UserDetails接口用于Spring Security认证
+ */
 @Data
 public class Users implements UserDetails {
     private int id;

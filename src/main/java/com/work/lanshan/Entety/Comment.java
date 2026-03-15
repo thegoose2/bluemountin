@@ -5,6 +5,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 评论实体类
+ * 对应数据库中的评论表，支持多级回复
+ */
 @Data
 public class Comment {
     private int id;

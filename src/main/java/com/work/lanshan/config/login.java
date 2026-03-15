@@ -27,6 +27,10 @@ public class login {
     @Autowired
     private MyPersistentTokenRepository tokenRepository;
 
+    /**
+     * 配置Spring Security安全过滤链
+     * 定义登录、权限、登出等安全策略
+     */
     @Bean
     public SecurityFilterChain FilterChain(HttpSecurity http) throws Exception {
         http
@@ -73,11 +77,20 @@ public class login {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Spring Security用户详情服务实现类
+     * 用于登录验证
+     */
     //登录
     @Service
     public static class UserServiceImpl implements UserDetailsService {
         @Autowired
         private Usermapper usermapper;
+        /**
+         * 根据用户名加载用户信息用于登录验证
+         * @param username 用户名
+         * @return 用户详情对象
+         */
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
             Users user = usermapper.findbyusername(username);

@@ -35,17 +35,37 @@ public class ArticleController {
 
     @Autowired
     private Usermapper usermapper;
+
+    /**
+     * 获取指定用户的文章列表
+     * @param id 用户ID
+     * @param status 文章状态
+     * @return 文章列表
+     */
     @GetMapping("/{id}")
     public List<Article> getArticle(@PathVariable int id,int status) {
         return articleService.getArticle(id, status);
     }
 
+    /**
+     * 分页获取已发布文章列表
+     * @param page 页码
+     * @param size 每页数量
+     * @return 文章列表
+     */
     @GetMapping
     public List<Article> listArticles(@RequestParam(defaultValue = "1") int page,
                                       @RequestParam(defaultValue = "10") int size) {
         return articleService.listPublished(page, size);
     }
 
+    /**
+     * 创建草稿文章
+     * @param content 文章内容
+     * @param article 文章对象
+     * @param model 模型
+     * @return 返回个人主页
+     */
     @PostMapping("/unsure")
     public String createArticle0(@RequestParam("content") String content, Article article,Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,6 +100,13 @@ public class ArticleController {
         return "home"; // home.html 模板中包含 fragments/profile.html 片段
     }
 
+    /**
+     * 创建待审核文章（发布文章）
+     * @param content 文章内容
+     * @param article 文章对象
+     * @param model 模型
+     * @return 返回个人主页
+     */
     @PostMapping("/sure")
     public String createArticle1(@RequestParam("content") String content, Article article, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -115,6 +142,12 @@ public class ArticleController {
     }
 
 
+    /**
+     * 更新文章
+     * @param id 文章ID
+     * @param article 文章对象
+     * @return 更新结果消息
+     */
     @PutMapping("/{id}")
     public String updateArticle(@PathVariable int id, @RequestBody Article article) {
         article.setId(id);
@@ -122,12 +155,22 @@ public class ArticleController {
         return "文章更新成功";
     }
 
+    /**
+     * 软删除文章（移入回收站）
+     * @param id 文章ID
+     * @return 删除结果消息
+     */
     @DeleteMapping("/{id}")
     public String deleteArticle(@PathVariable Long id) {
         articleService.softDeleteArticle(id);
         return "文章已移入回收站";
     }
 
+    /**
+     * 上传文章图片
+     * @param file 图片文件
+     * @return 上传结果（包含图片URL）
+     */
     @PostMapping("/upload/image")
     @ResponseBody
     public Map<String, Object> uploadImage(@RequestParam("editormd-image-file") MultipartFile file) throws IOException, IOException {
@@ -148,6 +191,11 @@ public class ArticleController {
         return result;
     }
 
+    /**
+     * 永久删除文章
+     * @param id 文章ID
+     * @return 删除结果
+     */
     @PostMapping("/{id}")
     @ResponseBody
     public ResponseEntity<String> deleteArticle(@PathVariable("id") int id) {

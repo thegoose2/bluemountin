@@ -16,6 +16,12 @@ public class favoriteController {
     @Autowired
     private favoriteService favouriteservice;
 
+    /**
+     * 添加文章到收藏夹
+     * @param request 请求参数（包含articleId和folderId）
+     * @param user 当前用户
+     * @return 添加结果
+     */
     @PostMapping("/favorite/add")
     @ResponseBody
     public ResponseEntity<?> addFavorite(@RequestBody Map<String, Integer> request,

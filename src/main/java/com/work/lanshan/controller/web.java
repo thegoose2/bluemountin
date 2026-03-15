@@ -42,6 +42,11 @@ public class web {
     private Messageservice messageservice;
 
 
+    /**
+     * 首页，显示动态feed内容
+     * @param model 模型
+     * @return 首页视图
+     */
     // 首页，显示动态feed内容
     @GetMapping({"/", "/home"})
     public String home(Model model) {
@@ -55,6 +60,11 @@ public class web {
         return "home";
     }
 
+    /**
+     * 用户个人主页，显示profile内容
+     * @param model 模型
+     * @return 个人主页视图
+     */
     // 用户个人主页，显示profile内容
     @GetMapping("/profile")
     public String profile(Model model) {
@@ -84,6 +94,11 @@ public class web {
         return "home"; // home.html 模板中包含 fragments/profile.html 片段
     }
 
+    /**
+     * 登录页
+     * @param model 模型
+     * @return 登录视图
+     */
     // 登录页
     @GetMapping("/login")
     public String login(Model model) {
@@ -91,6 +106,11 @@ public class web {
         return "login";
     }
 
+    /**
+     * 登录错误页
+     * @param model 模型
+     * @return 登录视图（带错误信息）
+     */
     @GetMapping("/loginerror")
     public String loginerror(Model model) {
         model.addAttribute("frags", "login-login");
@@ -98,17 +118,30 @@ public class web {
         return "login";
     }
 
+    /**
+     * 注册页
+     * @param model 模型
+     * @return 登录视图（显示注册页面）
+     */
     @GetMapping("/registerer")
     public String registered(Model model) {
         model.addAttribute("frag", "login-registered");
         return "login";
     }
 
+    /**
+     * 获取注册页面片段
+     * @return 注册片段
+     */
     @GetMapping("/registerer/fragment")
     public String registereded() {
         return "fragments/login-registered :: login-content";
     }
 
+    /**
+     * 获取登录页面片段
+     * @return 登录片段
+     */
     @GetMapping("/login/fragment")
     public String logined() {
         return "fragments/login-login :: login-content";
@@ -121,6 +154,13 @@ public class web {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * 用户注册
+     * @param user 用户对象
+     * @param model 模型
+     * @param confirmpassword 确认密码
+     * @return 登录视图
+     */
     //注册
     @PostMapping("/login/register")
     public String toregister(Users user, Model model, @RequestParam String confirmpassword) {
@@ -143,11 +183,22 @@ public class web {
         return "login";
     }
 
+    /**
+     * 文章编辑页
+     * @return 编辑视图
+     */
     @GetMapping("/edit")
     public String edit() {
         return "edit";
     }
 
+    /**
+     * 上传用户头像
+     * @param file 头像文件
+     * @param model 模型
+     * @return 个人主页
+     * @throws IOException IO异常
+     */
     @PostMapping("/users/uploadAvatar")
     public String uploadAvatar(@RequestParam("avatar") MultipartFile file,Model model) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -188,6 +239,12 @@ public class web {
 
     }
 
+    /**
+     * 我的博客页面（指定状态）
+     * @param temp 文章状态
+     * @param model 模型
+     * @return 个人主页片段
+     */
     @GetMapping("/myblog")
     public String blog(@RequestParam(defaultValue = "1") int temp, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -218,6 +275,11 @@ public class web {
         return "fragments/profile :: article-main-content";
     }
 
+    /**
+     * 我的草稿箱（所有草稿文章）
+     * @param model 模型
+     * @return 个人主页片段
+     */
     @GetMapping("/myblogs")
     public String blogs(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -247,6 +309,11 @@ public class web {
         return "fragments/profile :: article-main-content";
     }
 
+    /**
+     * 获取个人主页片段
+     * @param model 模型
+     * @return 个人主页片段
+     */
     @GetMapping("/profile/fragment")
     public String profileFragment(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -274,6 +341,11 @@ public class web {
         return "fragments/profile :: content"; // 只返回中间部分
     }
 
+    /**
+     * 获取首页动态feed片段
+     * @param model 模型
+     * @return feed片段
+     */
     @GetMapping("/gate/fragment")
     public String gateFragment(Model model) {
         List<Article> articleList = articleService.selectAll(1);
@@ -287,6 +359,12 @@ public class web {
         return "fragments/feed :: content"; // 只返回中间部分
     }
 
+    /**
+     * 获取关注用户的动态feed片段
+     * @param model 模型
+     * @param user 当前用户
+     * @return feed片段
+     */
     @GetMapping("/follow/fragment")
     public String followFragment(Model model,@AuthenticationPrincipal Users user) {
         List<Article> articleList = articleService.selectFollow(user.getId());
@@ -300,6 +378,12 @@ public class web {
         return "fragments/feed :: content"; // 只返回中间部分
     }
 
+    /**
+     * 获取收藏夹片段
+     * @param model 模型
+     * @param user 当前用户
+     * @return 收藏片段
+     */
     @GetMapping("/favorite/fragment")
     public String favoriteFragment(Model model, @AuthenticationPrincipal Users user) {
         List<folder> userFolders = favoriteservice.getfolder(user.getId());
@@ -308,6 +392,12 @@ public class web {
         return "fragments/favourite :: content";
     }
 
+    /**
+     * 获取消息页面片段（所有用户列表）
+     * @param model 模型
+     * @param user 当前用户
+     * @return 消息片段
+     */
     @GetMapping("/allmessages/fragment")
     public String messageFragment(Model model, @AuthenticationPrincipal Users user) {
         List<Users> usersList = messageservice.getallUser();
@@ -318,6 +408,12 @@ public class web {
         return "fragments/Allmessages :: content";
     }
 
+    /**
+     * 文章详情页
+     * @param id 文章ID
+     * @param model 模型
+     * @return 文章详情视图
+     */
     @GetMapping("/article/{id}")
     public String showArticleDetail(@PathVariable int id, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -338,6 +434,11 @@ public class web {
         return "article-detail"; // 对应 templates/article-detail.html
     }
 
+    /**
+     * 点赞文章
+     * @param article_id 文章ID
+     * @return 点赞结果（包含新的点赞数）
+     */
     @PostMapping("/like/article")
     @ResponseBody
     public Map<String, Object> likeArticle(@RequestParam("article_id") int article_id) {
@@ -350,6 +451,12 @@ public class web {
         return response;
     }
 
+    /**
+     * 创建收藏文件夹
+     * @param request 请求参数（包含文件夹名称）
+     * @param user 当前用户
+     * @return 创建结果
+     */
     @PostMapping("/favorite-folder/create")
     @ResponseBody
     public Map<String, Object> createFolder(@RequestBody Map<String, String> request,
@@ -363,6 +470,13 @@ public class web {
         return Map.of("success", true);
     }
 
+    /**
+     * 加载收藏文件夹中的文章
+     * @param folderId 文件夹ID
+     * @param model 模型
+     * @param user 当前用户
+     * @return feed片段
+     */
     @GetMapping("/favorite/folder/{folderId}")
     public String loadFolderContent(@PathVariable Integer folderId, Model model,@AuthenticationPrincipal Users user) {
         List<Article> articles = favoriteservice.getarticle(user.getId(),folderId);
@@ -375,6 +489,12 @@ public class web {
         return "fragments/feed :: content"; // 返回局部视图片段
     }
 
+    /**
+     * 根据关键字搜索文章
+     * @param keyword 搜索关键字
+     * @param model 模型
+     * @return 首页视图（显示搜索结果）
+     */
     //文章搜索
     @GetMapping("/search/content")
     public String searchByContent(@RequestParam("keyword") String keyword, Model model) {
@@ -389,6 +509,11 @@ public class web {
         return "home";
     }
 
+    /**
+     * 审核通过文章
+     * @param articleId 文章ID
+     * @return 审核结果
+     */
     //审核
     @PostMapping("/accept/{articleId}")
     @ResponseBody
@@ -397,6 +522,11 @@ public class web {
         return "success";
     }
 
+    /**
+     * 审核拒绝文章
+     * @param articleId 文章ID
+     * @return 审核结果
+     */
     @PostMapping("/refuse/{articleId}")
     @ResponseBody
     public String refuseArticle(@PathVariable int articleId) {
